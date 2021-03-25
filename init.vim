@@ -57,6 +57,8 @@ Plug 'reewr/vim-monokai-phoenix'
 " Comment Plugin
 Plug 'tpope/vim-commentary'
 
+Plug 'tpope/vim-vividchalk'
+
 " Initialize plugin system
 call plug#end()
 
