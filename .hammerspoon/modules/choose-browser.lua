@@ -29,9 +29,9 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
         host = 'file'
     end
     -- Closure over fullURL that is passed to browser
-    choose_browser = hs.chooser.new(function(choice)
+    local choose_browser = hs.chooser.new(function(choice)
         if not choice then focusLastFocused(); return end
-        app = choice.command
+        local app = choice.command
         hs.urlevent.openURLWithBundle(fullURL, app)
     end)
     choose_browser:rows(#available_browsers)
