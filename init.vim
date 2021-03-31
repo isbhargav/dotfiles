@@ -13,8 +13,15 @@ set ttyfast                " Faster redrawing.
 set lazyredraw             " Only redraw when necessary.
 
 
-"This is the node path for Coc
-let g:coc_node_path = '/Users/bhargavlad/.nvm/versions/node/v14.4.0/bin/node'
+"This is the node path for Coc (becuse I use fish-nvm it delays the loading of
+"node in our environment)
+"The work around of this is to execute `nvm_alias_command` command then
+"you won't need to use below line.
+" let g:coc_node_path = '/Users/bhargavlad/.nvm/versions/node/v14.4.0/bin/node'
+
+
+
+
 
 "This unsets the "last search pattern" register by hitting return
 nnoremap <silent> <CR> :noh<CR><CR>
@@ -198,3 +205,11 @@ if !empty(s:languageservers)
 endif
 
 
+
+" if Conda not activated use pyenv else use conda
+if $CONDA_PREFIX == ""
+  let s:current_python_path=$PYENV_VIRTUAL_ENV
+else
+  let s:current_python_path=$CONDA_PREFIX.'/bin/python'
+endif
+call coc#config('python', {'pythonPath': s:current_python_path})
