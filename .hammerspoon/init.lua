@@ -1,5 +1,6 @@
 require("modules.clipboard")
 require("modules.choose-browser")
+require("modules.anycomplete")
 
 -- disable animationDuration
 hs.window.animationDuration = 0
