@@ -1,16 +1,20 @@
-set relativenumber	   " Use Relative Numbering
-set nu			   " Use Simple Numbering
-set nowrap		   " Set nowrap
+set relativenumber	       " Use Relative Numbering
+set nu			           " Use Simple Numbering
+set nowrap                 " disable wrap for long lines
 set mouse=a                " Scroll with Mouse pad
 
-set autoindent             " Indent according to previous line.
-set expandtab              " Use spaces instead of tabs.
-set softtabstop =4         " Tab key indents by 4 spaces.
-set shiftwidth  =4         " >> indents by 4 spaces.
-set shiftround             " >> indents to next multiple of 'shiftwidth'.
+set expandtab              " replace <Tab with spaces
+set tabstop=2              " number of spaces that a <Tab> in the file counts for
+set softtabstop=2          " remove <Tab> symbols as it was spaces
+set shiftwidth=2           " indent size for << and >>
+set shiftround             " round indent to multiple of 'shiftwidth' (for << and >>)
+set smartindent            " Smart indent
 
-set ttyfast                " Faster redrawing.
-set lazyredraw             " Only redraw when necessary.
+set scrolloff=999          " always keep cursor at the middle of screen
+set noswapfile             " disable creating of *.swp files
+set hidden                 " hide buffers instead of closing
+set ignorecase             " Use case insensitive search, except when using capital letters
+set smartcase              " Must be used with ignorecase inoreder to work
 
 
 "This is the node path for Coc (becuse I use fish-nvm it delays the loading of
@@ -21,10 +25,10 @@ set lazyredraw             " Only redraw when necessary.
 
 
 
-
-
 "This unsets the "last search pattern" register by hitting return
 nnoremap <silent> <CR> :noh<CR><CR>
+" Disable search highlighting
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
 
 
 call plug#begin('~/.vim/plugged')
@@ -36,11 +40,8 @@ Plug 'junegunn/vim-easy-align'
 Plug 'godlygeek/tabular'
 Plug 'tpope/vim-sensible' 
 Plug 'tpope/vim-surround'
-Plug  'jiangmiao/auto-pairs'
+Plug 'jiangmiao/auto-pairs'
 Plug 'dense-analysis/ale'
-Plug 'kaicataldo/material.vim', { 'branch': 'main' }
-
-
 
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
@@ -54,6 +55,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 " Status line
 Plug 'itchyny/lightline.vim'
@@ -104,26 +106,43 @@ nmap <leader>9 9gt
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
 
+" Vscode like move lines
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
+" QuickFix List (open :copen)
+nnoremap <C-j>  :cnext<CR>
+nnoremap <C-k>  :cprev<CR>
+
 " Vim commentry leader+ /
 vmap <leader>/ gc
 nmap <leader>/ gcc
-vmap // gc
+vmap   //      gc
 
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
-
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
 
-" Vim magic for Regex
-nnoremap / /\v
-vnoremap / /\v
-cnoremap %s/ %smagic/
-cnoremap \>s/ \>smagic/
-nnoremap :g/ :g/\v
-nnoremap :g// :g//
+" Fzf
+nnoremap <leader><leader> :GFiles<CR>
+nnoremap <leader>fi       :Files<CR>
+nnoremap <leader>rg       :Rg! <C-R><C-W><CR>
+nnoremap <leader>ag       :Ag! <C-R><C-W><CR>
+nnoremap <leader>C        :Colors<CR>
+nnoremap <leader>B        :Buffers<CR>
+nnoremap <leader>fl       :Lines<CR>
+nnoremap <leader>m        :History<CR>
+
+" Vim magic for Regex don't need it if you use ignorecase and smart case
+" nnoremap / /\v
+" vnoremap / /\v
+" cnoremap %s/ %smagic/
+" cnoremap \>s/ \>smagic/
+" nnoremap :g/ :g/\v
+" nnoremap :g// :g//
 
 
 " ======= Minimal coc settings
@@ -205,11 +224,24 @@ if !empty(s:languageservers)
 endif
 
 
-
-" if Conda not activated use pyenv else use conda
-if $CONDA_PREFIX == ""
-  let s:current_python_path=$PYENV_VIRTUAL_ENV
-else
-  let s:current_python_path=$CONDA_PREFIX.'/bin/python'
+if has('nvim') && !empty($CONDA_PREFIX)
+  let s:current_python_path = $CONDA_PREFIX . '/bin/python'
+  " let s:anaconda_envs = $CONDA_PREFIX_1 . '/envs'
+  call coc#config('python', {'pythonPath': s:current_python_path})
+  " call coc#config('python', {'venvPath': s:anaconda_envs})
 endif
-call coc#config('python', {'pythonPath': s:current_python_path})
+
+" if Conda not activated use pyenv else use conda coc-python
+" if $CONDA_PREFIX == ""
+"   if $VIRTUAL_ENV == ""
+"     " let s:current_python_path=$PYENV_ROOT.'/shims/python'
+"     let g:python3_host_prog =$PYENV_ROOT.'/shims/python'
+"   else
+"     " let s:current_python_path=$VIRTUAL_ENV.'/bin/python'
+"     let g:python3_host_prog =$VIRTUAL_ENV.'/bin/python'
+" endif
+" else
+"   " let s:current_python_path=$CONDA_PREFIX.'/bin/python'
+"   let g:python3_host_prog=$CONDA_PREFIX.'/bin/python'
+" endif
+" call coc#config('python', {'pythonPath': s:current_python_path})
