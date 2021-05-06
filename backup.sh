@@ -1,8 +1,11 @@
-[ ! -d "./hammerspoon" ] && mkdir hammerspoon
-[ ! -d "./nvim" ] && mkdir nvim
+# create dir if they don't exist 
+[ ! -d "./hammerspoon" ] && mkdir "hammerspoon"
+[ ! -d "./nvim" ] && mkdir "nvim"
 [ ! -d "./tmux" ] && mkdir "tmux"
 [ ! -d "./zsh" ] && mkdir "zsh"
-# rsync -r ~/.hammerspoon/ hammerspoon
-# rsync -r ~/.config/nvim/ nvim
-# rsync ~/.tmux.conf tmux/tmux.conf
-# rsync ~/.zshrc zsh/zshrc
+
+# sync the files using rsync
+rsync -r ~/.hammerspoon/ hammerspoon
+rsync -r ~/.config/nvim/ nvim
+rsync ~/.tmux.conf tmux/tmux.conf
+rsync ~/.zshrc zsh/zshrc
