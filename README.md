@@ -1,5 +1,7 @@
 # dotfiles
  🔧 .files
+ 
+ To backup run `sh ./backup.sh`
 
 
  # Vim configurations
