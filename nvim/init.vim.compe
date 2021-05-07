@@ -48,7 +48,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'machakann/vim-highlightedyank'
-Plug 'justinmk/vim-dirvish'
+Plug 'tpope/vim-vinegar'
 
 
 " fuzzy search
@@ -71,7 +71,6 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'glepnir/lspsaga.nvim'
-Plug 'ray-x/lsp_signature.nvim'
 
 " Initialize plugin system
 call plug#end()
@@ -143,38 +142,37 @@ nnoremap <leader>B        :Buffers<CR>
 nnoremap <leader>W        :Windows<CR>
 nnoremap <leader>m        :History<CR>
 
+let g:compe = {}
+set completeopt=menuone,noselect
+let g:compe.enabled = v:true
+let g:compe.autocomplete = v:true
+let g:compe.debug = v:false
+let g:compe.min_length = 1
+let g:compe.preselect = 'enable'
+let g:compe.throttle_time = 80
+let g:compe.source_timeout = 200
+let g:compe.incomplete_delay = 400
+let g:compe.max_abbr_width = 100
+let g:compe.max_kind_width = 100
+let g:compe.max_menu_width = 100
+let g:compe.documentation = v:true
+
+let g:compe.source = {}
+let g:compe.source.path = v:true
+let g:compe.source.buffer = v:true
+let g:compe.source.calc = v:true
+let g:compe.source.nvim_lsp = v:true
+let g:compe.source.nvim_lua = v:true
+let g:compe.source.vsnip = v:true
+let g:compe.source.ultisnips = v:true
 " -------------------- LSP ---------------------------------
 
-:lua << EOF
-local saga = require 'lspsaga'
-saga.init_lsp_saga()
-
-vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
-vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
--- vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
-EOF
 
 :lua << EOF
 local nvim_lsp = require('lspconfig')
-local cfg = {
- bind = false, -- This is mandatory, otherwise border config won't get registered.
-               -- If you want to hook lspsaga or other signature handler, pls set to false
-  doc_lines = 10, -- only show one line of comment set to 0 if you do not want API comments be shown
-
-  hint_enable = true, -- virtual hint enable
-  hint_prefix = "🐼 ",  -- Panda for parameter
-  hint_scheme = "String",
-
-  handler_opts = {
-    border = "shadow"   -- double, single, shadow, none
-  },
-  decorator = {"`", "`"}  -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
-}
 local on_attach = function(client, bufnr)
 
-  require('completion').on_attach(client)
-  require("lsp_signature").on_attach(cfg)
-
+  -- require('completion').on_attach(client)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -210,9 +208,9 @@ local on_attach = function(client, bufnr)
   -- Set autocommands conditional on server_capabilities
   if client.resolved_capabilities.document_highlight then
     vim.api.nvim_exec([[
-      hi LspReferenceRead cterm=bold gui=bold
-      hi LspReferenceText cterm=bold gui=bold
-      hi LspReferenceWrite cterm=bold gui=bold
+      hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+      hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+      hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
       augroup lsp_document_highlight
         autocmd! * <buffer>
         autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
@@ -221,23 +219,21 @@ local on_attach = function(client, bufnr)
     ]], false)
   end
 end
-local servers = { "pyls", "clangd", "tsserver" }
+local servers = { "pyright", "clangd", "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup{ on_attach = on_attach }
 end
+
+local saga = require('lspsaga')
+saga.init_lsp_saga()
+
 EOF
 
-
-" Completion
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Set completeopt to have a better completion experience
-set completeopt=menuone,noinsert,noselect
-
-" Avoid showing message extra message when using completion
-set shortmess+=c
-let g:completion_enable_auto_hover = 1
-let g:completion_enable_auto_signature = 1
-" -------------------- LSP ---------------------------------f
+" vim-compe 
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
