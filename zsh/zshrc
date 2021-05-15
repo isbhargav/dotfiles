@@ -120,10 +120,13 @@ export LANG=en_US.UTF-8
 #   export EDITOR='mvim'
 # fi
 export EDITOR='nvim'
+# export PAGER='less'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export ARCHFLAGS="-arch aarch64"
 
+# defaults write -g InitialKeyRepeat -int 20 # normal minimum is 15 (225 ms)
+# defaults write -g KeyRepeat -int 1 # normal minimum is 2 (30 ms)
 # iterm
 bindkey "\e\e[D" backward-word # ⌥←
 bindkey "\e\e[C" forward-word # ⌥→
@@ -149,6 +152,8 @@ alias vi="nvim"
 alias vim="nvim"
 alias so='source'
 alias tm='tmux'
+alias typora="open -a typora"
+alias idea='nvim -c "cd ~/Eureka"'
 #########################################################################################
 
 # N node version manager - change installation path to $HOME/.n insted of /usr/local

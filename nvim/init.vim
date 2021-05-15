@@ -41,15 +41,37 @@ call plug#begin('~/.vim/plugged')
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 Plug 'godlygeek/tabular'
+" Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
+
+" Surround text-objects with quotes or brackets
 Plug 'tpope/vim-surround'
+
+" Vim's defacto git integration
 Plug 'tpope/vim-fugitive'
+
+" Navigate buffers,quicklist,arglist,locationlist with [,] keys
 Plug 'tpope/vim-unimpaired' 
+
+" Pair opening and closing quotes and brackets
 Plug 'jiangmiao/auto-pairs'
+
+" Indentation as text-object for languages like python
 Plug 'michaeljsmith/vim-indent-object'
+
+" Hilight text on yank
 Plug 'machakann/vim-highlightedyank'
+
+" Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
 
+" Sennsibly set project root
+Plug 'airblade/vim-rooter'
+
+" Gist(  make ~/.gist-vim and define g:github_user and g:gist_token varibales
+" in it)
+Plug 'mattn/webapi-vim'
+Plug 'mattn/vim-gist'
 
 " fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -58,7 +80,7 @@ Plug 'junegunn/fzf.vim'
 " Status line
 Plug 'itchyny/lightline.vim'
 
-" Monokai
+" ColorScheme
 " Plug 'reewr/vim-monokai-phoenix'
 " Plug 'ayu-theme/ayu-vim'
 Plug 'lifepillar/vim-gruvbox8'
@@ -66,7 +88,11 @@ Plug 'lifepillar/vim-gruvbox8'
 " Comment Plugin
 Plug 'tpope/vim-commentary'
 
-" neovim lsp
+" icons
+Plug 'kyazdani42/nvim-web-devicons'
+
+
+" neovim lsp plugins
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'hrsh7th/nvim-compe'
@@ -76,7 +102,10 @@ Plug 'ray-x/lsp_signature.nvim'
 " Initialize plugin system
 call plug#end()
 
-" ColorScheme
+" add icons to dirvish drawer
+call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vim.fn.fnamemodify('" .. p .. "', ':e')) or ' '")})
+
+"" ColorScheme
 set termguicolors     " enable true colors support
 set background=dark
 colorscheme gruvbox8_hard
@@ -133,8 +162,8 @@ nmap ga <Plug>(EasyAlign)
 
 
 " Fzf
-nnoremap <leader>p        :GFiles<CR>
 nnoremap <leader>fi       :Files<CR>
+nnoremap <leader><leader> :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
 nnoremap <leader>rg       :Rg! <C-R><C-W><CR>
 nnoremap <leader>ag       :Ag! <C-R><C-W><CR>
@@ -151,13 +180,14 @@ saga.init_lsp_saga()
 
 vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
 vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
--- vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
+vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
+vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
 EOF
 
 :lua << EOF
 local nvim_lsp = require('lspconfig')
 local cfg = {
- bind = false, -- This is mandatory, otherwise border config won't get registered.
+ bind = true, -- This is mandatory, otherwise border config won't get registered.
                -- If you want to hook lspsaga or other signature handler, pls set to false
   doc_lines = 10, -- only show one line of comment set to 0 if you do not want API comments be shown
 

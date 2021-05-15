@@ -2,6 +2,8 @@ require("modules.clipboard")
 require("modules.choose-browser")
 require("modules.anycomplete")
 require("modules.volume")
+require("modules.brightness")
+require("modules.bluetooth-control")
 
 -- disable animationDuration
 hs.window.animationDuration = 0

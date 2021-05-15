@@ -11,6 +11,11 @@ function changeVolume(diff)
     hs.audiodevice.defaultOutputDevice():setVolume(new)
   end
 end
+
+-- Increment/Decrement 3 steps 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'Down', changeVolume(-3))
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'Up', changeVolume(3))
 
+-- Increment/Decrement 20 steps 
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', changeVolume(20))
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', changeVolume(-20))
