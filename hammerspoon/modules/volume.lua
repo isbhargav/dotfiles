@@ -19,3 +19,15 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'Up', changeVolume(3))
 -- Increment/Decrement 20 steps 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '=', changeVolume(20))
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, '-', changeVolume(-20))
+
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "W", function()
+  hs.alert.show("Hello World!")
+end)
+-- function test()
+--   return function()
+--     -- hs.hid.capslock.toggle() 
+--     print("Hello")
+--   end
+-- end
+
+-- hs.hotkey.bind({'cmd'}, 'w', test())

@@ -130,8 +130,8 @@ export EDITOR='nvim'
 # iterm
 bindkey "\e\e[D" backward-word # ⌥←
 bindkey "\e\e[C" forward-word # ⌥→
-bindkey "^[[H" beginning-of-line # Cmd-Left
-bindkey "^[[F" end-of-line # Cmd-Right
+bindkey "^[[H" beginning-of-line # ⌘←
+bindkey "^[[F" end-of-line # ⌘→
 
 # kitty
 bindkey "\e[1;3D" backward-word # ⌥←

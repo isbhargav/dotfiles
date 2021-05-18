@@ -1,3 +1,74 @@
+call plug#begin('~/.vim/plugged')
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+Plug 'godlygeek/tabular'
+" Sensible vim plugins by tpope
+Plug 'tpope/vim-sensible' 
+
+" Surround text-objects with quotes or brackets
+Plug 'tpope/vim-surround'
+
+" Vim's defacto git integration
+Plug 'tpope/vim-fugitive'
+
+" Navigate buffers,quicklist,arglist,locationlist with [,] keys
+Plug 'tpope/vim-unimpaired' 
+
+" Pair opening and closing quotes and brackets
+Plug 'jiangmiao/auto-pairs'
+
+" Indentation as text-object for languages like python
+Plug 'michaeljsmith/vim-indent-object'
+
+" Hilight text on yank
+Plug 'machakann/vim-highlightedyank'
+
+" clear last search hightlight
+Plug 'isbhargav/vim-clear-highlight'
+
+" Folder drawer based on vim principals
+Plug 'justinmk/vim-dirvish'
+
+" Sennsibly set project root
+Plug 'airblade/vim-rooter'
+
+" Gist(  make ~/.gist-vim and define g:github_user and g:gist_token varibales
+" in it)
+Plug 'mattn/webapi-vim'
+Plug 'mattn/vim-gist'
+
+" fuzzy search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Status line
+Plug 'itchyny/lightline.vim'
+
+" ColorScheme
+Plug 'gruvbox-community/gruvbox'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+
+" Comment Plugin
+Plug 'tpope/vim-commentary'
+
+" icons
+Plug 'kyazdani42/nvim-web-devicons'
+
+
+" neovim lsp plugins
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'hrsh7th/nvim-compe'
+Plug 'glepnir/lspsaga.nvim'
+Plug 'ray-x/lsp_signature.nvim'
+
+" Initialize plugin system
+call plug#end()
+
 set relativenumber	       " Use Relative Numbering
 set nu			           " Use Simple Numbering
 set nowrap                 " disable wrap for long lines
@@ -31,76 +102,9 @@ aug FixTypos
 aug end
 
 "This unsets the "last search pattern" register by hitting return
-nnoremap <silent> <CR> :noh<CR><CR>
+" nnoremap <silent> <CR> :noh<CR><CR>
 " Disable search highlighting
-nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
-
-call plug#begin('~/.vim/plugged')
-" Make sure you use single quotes
-
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'junegunn/vim-easy-align'
-Plug 'godlygeek/tabular'
-" Sensible vim plugins by tpope
-Plug 'tpope/vim-sensible' 
-
-" Surround text-objects with quotes or brackets
-Plug 'tpope/vim-surround'
-
-" Vim's defacto git integration
-Plug 'tpope/vim-fugitive'
-
-" Navigate buffers,quicklist,arglist,locationlist with [,] keys
-Plug 'tpope/vim-unimpaired' 
-
-" Pair opening and closing quotes and brackets
-Plug 'jiangmiao/auto-pairs'
-
-" Indentation as text-object for languages like python
-Plug 'michaeljsmith/vim-indent-object'
-
-" Hilight text on yank
-Plug 'machakann/vim-highlightedyank'
-
-" Folder drawer based on vim principals
-Plug 'justinmk/vim-dirvish'
-
-" Sennsibly set project root
-Plug 'airblade/vim-rooter'
-
-" Gist(  make ~/.gist-vim and define g:github_user and g:gist_token varibales
-" in it)
-Plug 'mattn/webapi-vim'
-Plug 'mattn/vim-gist'
-
-" fuzzy search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-
-" Status line
-Plug 'itchyny/lightline.vim'
-
-" ColorScheme
-" Plug 'reewr/vim-monokai-phoenix'
-" Plug 'ayu-theme/ayu-vim'
-Plug 'lifepillar/vim-gruvbox8'
-
-" Comment Plugin
-Plug 'tpope/vim-commentary'
-
-" icons
-Plug 'kyazdani42/nvim-web-devicons'
-
-
-" neovim lsp plugins
-Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
-Plug 'hrsh7th/nvim-compe'
-Plug 'glepnir/lspsaga.nvim'
-Plug 'ray-x/lsp_signature.nvim'
-
-" Initialize plugin system
-call plug#end()
+" nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
 
 " add icons to dirvish drawer
 call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vim.fn.fnamemodify('" .. p .. "', ':e')) or ' '")})
@@ -108,7 +112,7 @@ call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vi
 "" ColorScheme
 set termguicolors     " enable true colors support
 set background=dark
-colorscheme gruvbox8_hard
+colorscheme gruvbox
 
 " map leader key
 let mapleader = ' '
@@ -148,7 +152,6 @@ nnoremap gp `[v`]
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 
-
 " Vim commentry leader+ /
 vmap <leader>/ gc
 nmap <leader>/ gcc
@@ -161,27 +164,41 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 
-" Fzf
+" Fzf bindings
 nnoremap <leader>fi       :Files<CR>
 nnoremap <leader><leader> :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
-nnoremap <leader>rg       :Rg! <C-R><C-W><CR>
-nnoremap <leader>ag       :Ag! <C-R><C-W><CR>
+nnoremap <leader>rg       :Rg!<C-R><C-W><CR>
+nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
 nnoremap <leader>C        :Colors<CR>
 nnoremap <leader>B        :Buffers<CR>
 nnoremap <leader>W        :Windows<CR>
 nnoremap <leader>m        :History<CR>
 
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 " -------------------- LSP ---------------------------------
-
-:lua << EOF
-local saga = require 'lspsaga'
-saga.init_lsp_saga()
-
-vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
-vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
-vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
-vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
+" Treesitter Hiighlighting
+:lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+  },
+}
 EOF
 
 :lua << EOF
@@ -192,11 +209,11 @@ local cfg = {
   doc_lines = 10, -- only show one line of comment set to 0 if you do not want API comments be shown
 
   hint_enable = true, -- virtual hint enable
-  hint_prefix = "🐼 ",  -- Panda for parameter
+  hint_prefix = " ", -- Panda for parameter
   hint_scheme = "String",
 
   handler_opts = {
-    border = "shadow"   -- double, single, shadow, none
+    border = "none"   -- double, single, shadow, none
   },
   decorator = {"`", "`"}  -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
 }
@@ -258,6 +275,16 @@ end
 EOF
 
 
+" LSP Saga config
+:lua << EOF
+local saga = require 'lspsaga'
+saga.init_lsp_saga { }
+
+--  vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
+--  vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
+--  vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
+--  vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
+EOF
 " Completion
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
