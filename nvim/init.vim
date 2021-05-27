@@ -4,6 +4,7 @@ call plug#begin('~/.vim/plugged')
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 Plug 'godlygeek/tabular'
+Plug '/tpope/vim-characterize'
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
 
@@ -48,6 +49,8 @@ Plug 'itchyny/lightline.vim'
 
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
+Plug 'chriskempson/base16-vim'
+
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
@@ -58,6 +61,8 @@ Plug 'tpope/vim-commentary'
 " icons
 Plug 'kyazdani42/nvim-web-devicons'
 
+" Seamless tmux and vim navigation
+Plug 'christoomey/vim-tmux-navigator'
 
 " neovim lsp plugins
 Plug 'neovim/nvim-lspconfig'
@@ -69,28 +74,45 @@ Plug 'ray-x/lsp_signature.nvim'
 " Initialize plugin system
 call plug#end()
 
-set relativenumber	       " Use Relative Numbering
-set nu			           " Use Simple Numbering
-set nowrap                 " disable wrap for long lines
-set mouse=a                " Scroll with Mouse pad
+set enc=utf-8
+set emo
+set relativenumber                    " Use Relative Numbering
+set nu                                " Use Simple Numbering
+set nowrap                            " disable wrap for long lines
+set mouse=a                           " Scroll with Mouse pad
 
-set expandtab              " replace <Tab with spaces
-set tabstop=2              " number of spaces that a <Tab> in the file counts for
-set softtabstop=2          " remove <Tab> symbols as it was spaces
-set shiftwidth=2           " indent size for << and >>
-set shiftround             " round indent to multiple of 'shiftwidth' (for << and >>)
-set smartindent            " Smart indent
+set expandtab                         " replace <Tab> with spaces
+set tabstop=2                         " number of spaces that a <Tab> in the file counts for
+set softtabstop=2                     " remove <Tab> symbols as it was spaces
+set shiftwidth=2                      " indent size for << and >>
+set shiftround                        " round indent to multiple of 'shiftwidth' (for << and >>)
+set smartindent                       " Smart indent
 
-set scrolloff=999          " always keep cursor at the middle of screen
-set noswapfile             " disable creating of *.swp files
-set hidden                 " hide buffers instead of closing
-set ignorecase             " Use case insensitive search, except when using capital letters
-set smartcase              " Must be used with ignorecase inoreder to work
-set inccommand=nosplit     " Live feedback for s/pat/replace(Only for Neovim)
-set path+=~/.config/nvim/init.vim
-set path+=**               " Search all the subdirectories recursively
+set scrolloff=999                     " always keep cursor at the middle of screen
+set noswapfile                        " disable creating of *.swp files
+set hidden                            " hide buffers instead of closing
+set ignorecase                        " Use case insensitive search, except when using capital letters
+set smartcase                         " Must be used with ignorecase inoreder to work
+set inccommand=nosplit                " Live feedback for s/pat/replace(Only for Neovim)
+set path+=**                          " Search all the subdirectories recursively
+set path+=~/.config/nvim/init.vim     " Add init.vim to path
+set dictionary+=/usr/share/dict/words " dictionary completion
+set noshowmode                        " status bar displays mode so no need for vim
+set cursorline                        " hilight currentline
 
-set dictionary+=/usr/share/dict/words  " dictionary completion
+
+" Let's save undo info!
+" m h  dom mon dow   command
+" 43 00 *   *   3     find ~/.vim/undo-dir -type f -mtime +90 -delete
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
+
 " Correct typos
 aug FixTypos
     :command! WQ wq
@@ -100,6 +122,25 @@ aug FixTypos
     :command! W w
     :command! Q q
 aug end
+
+let g:lightline = {
+      \ 'colorscheme': 'powerline',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead'
+      \ },
+      \ }
+
+" Show diff from last saved changes(:DiffOrign works great with ]c and [c to
+" jump to changes)
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
+  \ | diffthis | wincmd p | diffthis
+endif 
+
 
 "This unsets the "last search pattern" register by hitting return
 " nnoremap <silent> <CR> :noh<CR><CR>
@@ -111,8 +152,10 @@ call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vi
 
 "" ColorScheme
 set termguicolors     " enable true colors support
-set background=dark
-colorscheme gruvbox
+" let base16colorspace=256  " Access colors present in 256 colorspace
+" set background=dark
+" colorscheme gruvbox
+colorscheme base16-tomorrow-night-eighties  
 
 " map leader key
 let mapleader = ' '
@@ -128,7 +171,9 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
-nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+" nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+nnoremap <leader>pv :wincmd v<bar> :Dirvish % <bar> :vertical resize 30 <bar> <CR>
+" nnoremap <leader>pv :wincmd v<bar> :Dirvish :sil! /expand("%:t")<CR> :vertical resize 30<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
@@ -148,9 +193,9 @@ nmap <leader>9 9gt
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
 
-" Vscode like move lines
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
+" Fancy Vscode like move lines (this thing messes with V-Line when key repeat is high)
+" vnoremap J :m '>+1<CR>gv=gv
+" vnoremap K :m '<-2<CR>gv=gv
 
 " Vim commentry leader+ /
 vmap <leader>/ gc
@@ -160,9 +205,16 @@ vmap   //      gc
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
 
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+" nmap ga <Plug>(EasyAlign)
+
+
+" Copy to clipbord
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
 
 " Fzf bindings
 nnoremap <leader>fi       :Files<CR>
@@ -213,7 +265,7 @@ local cfg = {
   hint_scheme = "String",
 
   handler_opts = {
-    border = "none"   -- double, single, shadow, none
+    border = "shadow"   -- double, single, shadow, none
   },
   decorator = {"`", "`"}  -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
 }
@@ -268,9 +320,27 @@ local on_attach = function(client, bufnr)
     ]], false)
   end
 end
-local servers = { "pyls", "clangd", "tsserver" }
+local servers = { "pyls", "clangd", "tsserver", "rust_analyzer" }
 for _, lsp in ipairs(servers) do
+  if lsp == "rust_analyzer" then
+        local settings = {
+        ["rust-analyzer"] = {
+            assist = {
+                importMergeBehavior = "last",
+                importPrefix = "by_self",
+            },
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+          }
+        }
+  nvim_lsp[lsp].setup{ on_attach = on_attach, settings=settings}
+  else
   nvim_lsp[lsp].setup{ on_attach = on_attach }
+  end
 end
 EOF
 
@@ -285,6 +355,24 @@ saga.init_lsp_saga { }
 --  vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
 --  vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
 EOF
+
+" Lspsaga mappings
+nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
+nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
+vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
+nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
+nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
+nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
+nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
+nnoremap <silent>rn <cmd>lua require('lspsaga.rename').rename()<CR>
+nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
+nnoremap <silent><leader>cc <cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
+nnoremap <silent> gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
+nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
+nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
+nnoremap <silent> <A-d> <cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>
+tnoremap <silent> <A-d> <C-\><C-n>:lua require('lspsaga.floaterm').close_float_terminal()<CR>
+
 " Completion
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"

@@ -6,6 +6,7 @@ require("modules.brightness")
 require("modules.bluetooth-control")
 require('modules.capslock')
 
+
 -- disable animationDuration
 hs.window.animationDuration = 0
 
