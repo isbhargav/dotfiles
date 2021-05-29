@@ -62,7 +62,7 @@ Plug 'tpope/vim-commentary'
 Plug 'kyazdani42/nvim-web-devicons'
 
 " Seamless tmux and vim navigation
-Plug 'christoomey/vim-tmux-navigator'
+Plug 'vim-scripts/YankRing.vim'
 
 " neovim lsp plugins
 Plug 'neovim/nvim-lspconfig'
@@ -110,6 +110,8 @@ endif
 if !isdirectory($HOME."/.vim/undo-dir")
     call mkdir($HOME."/.vim/undo-dir", "", 0700)
 endif
+
+let g:yankring_history_file = '.vim/yankring_history/yankring_history'
 set undodir=~/.vim/undo-dir
 set undofile
 
@@ -128,6 +130,13 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]]
+      \ ,
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'charvaluehex', 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component': {
+      \   'charvaluehex': '<%b> 0x%B'
       \ },
       \ 'component_function': {
       \   'gitbranch': 'FugitiveHead'
@@ -215,6 +224,7 @@ noremap <Leader>y "*y
 noremap <Leader>p "*p
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
+
 
 " Fzf bindings
 nnoremap <leader>fi       :Files<CR>
@@ -320,7 +330,7 @@ local on_attach = function(client, bufnr)
     ]], false)
   end
 end
-local servers = { "pyls", "clangd", "tsserver", "rust_analyzer" }
+local servers = { "pyright", "clangd", "tsserver", "rust_analyzer" }
 for _, lsp in ipairs(servers) do
   if lsp == "rust_analyzer" then
         local settings = {
