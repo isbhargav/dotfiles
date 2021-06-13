@@ -6,6 +6,8 @@ require("modules.brightness")
 require("modules.bluetooth-control")
 require('modules.capslock')
 
+-- activate control escape spoon
+-- hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon
 
 -- disable animationDuration
 hs.window.animationDuration = 0
@@ -15,8 +17,10 @@ hs.window.animationDuration = 0
 --
 
 local psuSerial = 'C061083PT0RPM0RAS'
-if hs.battery.psuSerialString() == psuSerial then
-  print("Serial Match")
+if hs.battery.psuSerialString() ~= psuSerial then
+  if hs.battery.psuSerialString() ~= '' then -- no charger connected
+    hs.alert.show("You have connected Someonelse's Charger!!!")
+  end
 end
 function reload_config(files)
     hs.reload()

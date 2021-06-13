@@ -1,0 +1,98 @@
+{
+  "editor.fontFamily": "'Operator Mono','CaskaydiaCove Nerd Font',Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 17,
+  "vim.leader": " ",
+  "vim.highlightedyank.enable": true,
+  "vim.camelCaseMotion.enable": true,
+  "vim.handleKeys": {
+    "<D-c>": false,
+    "<D-x>": false,
+    "<D-v>": false
+  },
+  "vim.visualModeKeyBindings": [
+    {
+      "before": ["<leader>", "/"],
+      "commands": ["editor.action.commentLine"],
+      "when": "editorTextFocus && !editorReadonly"
+    }
+  ],
+  "vim.normalModeKeyBindings": [
+    {
+      "before": ["<leader>", "/"],
+      "commands": ["editor.action.commentLine"],
+      "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+      "before":["K"],
+      "after":["g","h"]
+    },
+    {
+      "before":["g","f"],
+      "after":["g","h"]
+    },
+    {
+      "before": ["leader", "f"],
+      "commands": [
+        "workbench.action.quickOpen"
+      ]
+    },
+    {
+      "before": ["leader", "g"],
+      "commands": [
+        "workbench.action.gotoSymbol"
+      ]
+    },
+    {
+      "before":["leader","1"],
+      "commands": ["workbench.action.openEditorAtIndex1"]
+    },
+    {
+      "before":["leader","2"],
+      "commands": ["workbench.action.openEditorAtIndex2"]
+    },
+    {
+      "before":["leader","3"],
+      "commands": ["workbench.action.openEditorAtIndex3"]
+    },
+    {
+      "before":["leader","4"],
+      "commands": ["workbench.action.openEditorAtIndex4"]
+    },
+    {
+      "before":["leader","5"],
+      "commands": ["workbench.action.openEditorAtIndex5"]
+    },
+    {
+      "before":["leader","6"],
+      "commands": ["workbench.action.openEditorAtIndex6"]
+    },
+    {
+      "before":["leader","7"],
+      "commands": ["workbench.action.openEditorAtIndex7"]
+    },
+    {
+      "before":["leader","8"],
+      "commands": ["workbench.action.openEditorAtIndex8"]
+    },
+    {
+      "before":["leader","9"],
+      "commands": ["workbench.action.openEditorAtIndex9"]
+    }
+  ],
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "files.autoSave": "afterDelay",
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.iconTheme": "vscode-icons",
+  "editor.minimap.enabled": false,
+  "vim.enableNeovim": true,
+  "vim.neovimPath": "/opt/homebrew/bin/nvim",
+  "workbench.colorTheme": "Base16 Tomorrow",
+  "zenMode.hideLineNumbers": false,
+  "vim.smartRelativeLine": true
+}

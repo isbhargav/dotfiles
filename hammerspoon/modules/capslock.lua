@@ -1,6 +1,10 @@
 
 -- Ctrl+Cmd+Alt + P -- Toggle Caps Lock
-hs.hotkey.bind({"ctrl", "cmd", "alt"}, "P", function() hs.hid.capslock.toggle() end)
+hs.hotkey.bind({"ctrl", "cmd", "alt"}, "P", function()
+  hs.hid.capslock.toggle()
+  local status = hs.hid.capslock.get()
+  hs.alert.show("Capslock: " .. (status and "OFF" or"ON" ))
+end)
 --
 --
 -- local iconAscii = [[ASCII:

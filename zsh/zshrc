@@ -76,8 +76,8 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #
-# vi mode
-bindkey -v
+# vi mode ( you dont need this if you use zsh-vi-mode plugin)
+# bindkey -v
 
 plugins=(
   git
@@ -132,7 +132,7 @@ export LANG=en_US.UTF-8
 #   export EDITOR='mvim'
 # fi
 export EDITOR='nvim'
-# export PAGER='less'
+export PAGER='most'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export ARCHFLAGS="-arch aarch64"
