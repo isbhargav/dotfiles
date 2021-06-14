@@ -10,10 +10,27 @@
     "<D-v>": false
   },
   "vim.visualModeKeyBindings": [
+
     {
       "before": ["<leader>", "/"],
       "commands": ["editor.action.commentLine"],
       "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+      "before": [
+          ">"
+      ],
+      "commands": [
+          "editor.action.indentLines"
+      ]
+    },
+    {
+      "before": [
+          "<"
+      ],
+      "commands": [
+          "editor.action.outdentLines"
+      ]
     }
   ],
   "vim.normalModeKeyBindings": [
@@ -31,7 +48,7 @@
       "after":["g","h"]
     },
     {
-      "before": ["leader", "f"],
+      "before": ["leader", "f","i"],
       "commands": [
         "workbench.action.quickOpen"
       ]
@@ -94,5 +111,6 @@
   "vim.neovimPath": "/opt/homebrew/bin/nvim",
   "workbench.colorTheme": "Base16 Tomorrow",
   "zenMode.hideLineNumbers": false,
-  "vim.smartRelativeLine": true
+  "vim.smartRelativeLine": true,
+  "vim.easymotion": true
 }
