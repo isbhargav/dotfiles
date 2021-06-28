@@ -138,7 +138,7 @@ aug FixTypos
 aug end
 
 let g:lightline = {
-      \ 'colorscheme': 'PaperColor',
+      \ 'colorscheme': 'default',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]]
@@ -174,9 +174,9 @@ call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vi
 "" ColorScheme
 set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
-" set background=dark
-" colorscheme gruvbox
-colorscheme base16-default-dark
+set background=dark
+colorscheme gruvbox
+" colorscheme base16-default-dark
 
 " map leader key
 let mapleader = ' '
@@ -187,16 +187,19 @@ nnoremap <leader>,zo :tabnew %<cr>
 nnoremap <leader>,zc :tabclose<cr>
 
 " Switch Windows with leader+ hjkl
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>ws :split<CR>
+nnoremap <leader>wv :vert split<CR>
+nnoremap <leader>wh :wincmd h<CR>
+nnoremap <leader>wj :wincmd j<CR>
+nnoremap <leader>wk :wincmd k<CR>
+nnoremap <leader>wl :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
 
-" Switch between tabs 
+" Switch between buffers and tabs 
+nmap <leader><tab> <C-^>
 nmap <leader>1 1gt
 nmap <leader>2 2gt
 nmap <leader>3 3gt
@@ -208,7 +211,9 @@ nmap <leader>8 8gt
 nmap <leader>9 9gt
 
 " Short mappings for common tasks
-noremap <leader> <leader>s :so $VIMRC<cr>
+" Ctrl-j/k works as Ctrl-d/u
+nnoremap <C-j> <C-d>
+nnoremap <C-k> <C-u>
 
 noremap j gj
 noremap k gk
@@ -223,7 +228,7 @@ vmap < <gv
 nnoremap Q @q
 
 " Y similar to C and D
-nmap Y y$
+nmap Y "y$
 
 
 " Select pasted last pasted similar to gv
@@ -262,14 +267,16 @@ noremap <Leader>P "+p
 
 
 " Fzf bindings
-nnoremap <leader>fi       :Files<CR>
-nnoremap <leader><leader> :GFiles<CR>
+nnoremap <leader>ff       :Files<CR> 
+nnoremap <leader>pf       :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
-nnoremap <leader>rg       :Rg!<C-R><C-W><CR>
+nnoremap <leader>bl       :BLines<CR>
+nnoremap <leader>bb       :Buffers<CR>
+nnoremap <leader>*        :Rg <C-R><C-W><CR>
+nnoremap <leader>rg       :Rg!<CR>
 nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
 nnoremap <leader>C        :Colors<CR>
-nnoremap <leader>B        :Buffers<CR>
-nnoremap <leader>W        :Windows<CR>
+nnoremap <leader>ww       :Windows<CR>
 nnoremap <leader>m        :History<CR>
 
 " Customize fzf colors to match your color scheme
@@ -461,16 +468,18 @@ EOF
 
 " Lspsaga mappings
 nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
+nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
+nnoremap <silent> gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
+nnoremap <silent> gD <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
 vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
-nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
 nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
 nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 nnoremap <silent>rn <cmd>lua require('lspsaga.rename').rename()<CR>
 nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
 nnoremap <silent><leader>cc <cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
-nnoremap <silent> gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
 nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
 nnoremap <silent> <A-d> <cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>

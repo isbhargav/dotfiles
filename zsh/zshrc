@@ -83,6 +83,7 @@ plugins=(
   git
   brew
   osx
+  tmux
   zsh-autosuggestions
   zsh-syntax-highlighting
   zsh-completions
@@ -132,10 +133,11 @@ export LANG=en_US.UTF-8
 #   export EDITOR='mvim'
 # fi
 export EDITOR='nvim'
-export PAGER='most'
+export PAGER='less'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export ARCHFLAGS="-arch aarch64"
+# export ARCHFLAGS="-arch arm64"
 
 # defaults write -g InitialKeyRepeat -int 20 # normal minimum is 15 (225 ms)
 # defaults write -g KeyRepeat -int 1 # normal minimum is 2 (30 ms)
