@@ -169,11 +169,13 @@ alias zshso="source ~/.zshrc"
 alias tmconf="nvim ~/.tmux.conf"
 alias vimconf="nvim ~/.config/nvim/init.vim"
 alias vi="nvim"
-alias vim="nvim"
+# alias vim="nvim"
 alias so='source'
 alias tm='tmux'
 alias typora="open -a typora"
 alias idea='nvim -c "cd ~/Eureka"'
+alias g++='g++ -std=c++17 -Wshadow -Wall -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG'
+alias ge='git rev-list --objects --all | awk '$2' | sort -k2 | uniq -cf1 | sort -rn | head'
 #########################################################################################
 
 # N node version manager - change installation path to $HOME/.n insted of /usr/local

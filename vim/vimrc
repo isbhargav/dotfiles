@@ -1,0 +1,345 @@
+call plug#begin('~/.vim/plugged')
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+Plug 'godlygeek/tabular'
+
+" upper/lower/mixed/camel/title cra
+Plug 'tpope/vim-abolish'
+
+" split and join line depending on programmning language(gJ & gS)
+Plug 'AndrewRadev/splitjoin.vim'
+
+" better traget with f & t 
+Plug 'unblevable/quick-scope'
+
+" Sensible vim plugins by tpope
+Plug 'tpope/vim-sensible' 
+
+" Surround text-objects with quotes or brackets
+Plug 'tpope/vim-surround'
+
+" Vim's defacto git integration
+Plug 'tpope/vim-fugitive'
+
+" Navigate buffers,quicklist,arglist,locationlist with [,] keys
+Plug 'tpope/vim-unimpaired' 
+
+" Pair opening and closing quotes and brackets
+Plug 'jiangmiao/auto-pairs'
+
+" provide additional text objects
+Plug 'wellle/targets.vim'
+
+" Indentation as text-object for languages like python
+Plug 'michaeljsmith/vim-indent-object'
+
+" Hilight text on yank
+Plug 'machakann/vim-highlightedyank'
+
+" clear last search hightlight
+Plug 'isbhargav/vim-clear-highlight'
+
+" Folder drawer based on vim principals
+Plug 'justinmk/vim-dirvish'
+
+" Sennsibly set project root
+Plug 'airblade/vim-rooter'
+
+" Gist(  make ~/.gist-vim and define g:github_user and g:gist_token varibales
+" in it)
+Plug 'mattn/webapi-vim'
+Plug 'mattn/vim-gist'
+
+" fuzzy search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Status line
+Plug 'itchyny/lightline.vim'
+
+" ColorScheme
+Plug 'gruvbox-community/gruvbox'
+Plug 'chriskempson/base16-vim'
+
+" Comment Plugin
+Plug 'tpope/vim-commentary'
+
+" Seamless tmux and vim navigation
+Plug 'vim-scripts/YankRing.vim'
+
+" vim lsp plugins
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+" Initialize plugin system
+call plug#end()
+
+set enc=utf-8
+set emo
+set relativenumber                    " Use Relative Numbering
+set nu                                " Use Simple Numbering
+set nowrap                            " disable wrap for long lines
+set mouse=a                           " Scroll with Mouse pad
+
+set expandtab                         " replace <Tab> with spaces
+set tabstop=2                         " number of spaces that a <Tab> in the file counts for
+set softtabstop=2                     " remove <Tab> symbols as it was spaces
+set shiftwidth=2                      " indent size for << and >>
+set shiftround                        " round indent to multiple of 'shiftwidth' (for << and >>)
+set smartindent                       " Smart indent
+
+set scrolloff=999                     " always keep cursor at the middle of screen
+set noswapfile                        " disable creating of *.swp files
+set hidden                            " hide buffers instead of closing
+set ignorecase                        " Use case insensitive search, except when using capital letters
+set smartcase                         " Must be used with ignorecase inoreder to work
+set path+=**                          " Search all the subdirectories recursively
+set dictionary+=/usr/share/dict/words " dictionary completion
+set noshowmode                        " status bar displays mode so no need for vim
+
+
+" " Let's save undo info!
+" " m h  dom mon dow   command
+" " 43 00 *   *   3     find ~/.vim/undo-dir -type f -mtime +90 -delete
+" if !isdirectory($HOME."/.vim")
+"     call mkdir($HOME."/.vim", "", 0770)
+" endif
+" if !isdirectory($HOME."/.vim/undo-dir")
+"     call mkdir($HOME."/.vim/undo-dir", "", 0700)
+" endif
+
+" let g:yankring_history_file = '.vim/yankring_history/yankring_history'
+" set undodir=~/.vim/undo-dir
+" set undofile
+
+" Correct typos
+aug FixTypos
+    :command! WQ wq
+    :command! Wq wq
+    :command! QA qa
+    :command! Qa qa
+    :command! W w
+    :command! Q q
+aug end
+
+
+" Show diff from last saved changes(:DiffOrign works great with ]c and [c to
+" jump to changes)
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
+  \ | diffthis | wincmd p | diffthis
+endif 
+
+
+"This unsets the "last search pattern" register by hitting return
+" nnoremap <silent> <CR> :noh<CR><CR>
+" Disable search highlighting
+" nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
+
+
+"" ColorScheme
+" set termguicolors     " enable true colors support
+" let base16colorspace=256  " Access colors present in 256 colorspace
+set background=dark
+colorscheme gruvbox
+" colorscheme base16-default-dark
+
+" map leader key
+let mapleader = ' '
+
+" NERDtree like setup for Netrw
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+" Open automaticaly 
+" augroup ProjectDrawer
+"   autocmd!
+"   autocmd VimEnter * :Vexplore
+" augroup END
+" Toggle Vexplore with Ctrl-E
+function! ToggleVExplorer()
+  if exists("t:expl_buf_num")
+      let expl_win_num = bufwinnr(t:expl_buf_num)
+      if expl_win_num != -1
+          let cur_win_nr = winnr()
+          exec expl_win_num . 'wincmd w'
+          close
+          exec cur_win_nr . 'wincmd w'
+          unlet t:expl_buf_num
+      else
+          unlet t:expl_buf_num
+      endif
+  else
+      exec '1wincmd w'
+      Vexplore
+      let t:expl_buf_num = bufnr("%")
+  endif
+endfunction
+map <silent> <C-E> :call ToggleVExplorer()<CR>
+
+" Zoom a split window in a tab/ close it
+nnoremap <leader>,zo :tabnew %<cr>
+nnoremap <leader>,zc :tabclose<cr>
+
+" Switch Windows with leader+ hjkl
+nnoremap <leader>s :split<CR>
+nnoremap <leader>v :vert split<CR>
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>j :wincmd j<CR>
+nnoremap <leader>k :wincmd k<CR>
+nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>u :UndotreeShow<CR>
+nnoremap <Leader>+ :vertical resize +5<CR>
+nnoremap <Leader>- :vertical resize -5<CR>
+
+
+" Switch between buffers and tabs 
+nmap <leader><tab> <C-^>
+nmap <leader>1 1gt
+nmap <leader>2 2gt
+nmap <leader>3 3gt
+nmap <leader>4 4gt
+nmap <leader>5 5gt
+nmap <leader>6 6gt
+nmap <leader>7 7gt
+nmap <leader>8 8gt
+nmap <leader>9 9gt
+
+" Short mappings for common tasks
+" Ctrl-j/k works as Ctrl-d/u
+nnoremap <C-j> <C-d>
+nnoremap <C-k> <C-u>
+
+noremap j gj
+noremap k gk
+noremap 0 ^
+noremap ^ 0
+
+" Keeps the current visual block selection active after changing indent
+vmap > >gv
+vmap < <gv
+
+"playback with Q
+nnoremap Q @q
+
+" Y similar to C and D
+nmap Y "y$
+
+
+" Select pasted last pasted similar to gv
+nnoremap gp `[v`]
+
+" Fancy Vscode like move lines (this thing messes with V-Line when key repeat is high)
+vnoremap <S-Down> :m '>+1<CR>gv=gv
+vnoremap <S-Up> :m '<-2<CR>gv=gv
+vnoremap <S-Right>  xpgvlolo
+vnoremap <S-left>   xhPgvhoho
+" vnoremap <S-Down>   xjPgvjojo
+" vnoremap <S-Up>     xkPgvkoko
+
+" Vim commentry leader+ /
+vmap <leader>/ gc
+nmap <leader>/ gcc
+vmap   //      gc
+
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+" xmap ga <Plug>(EasyAlign)
+nmap <leader>e <Plug>(EasyAlign)
+vmap <leader>e <Plug>(EasyAlign)
+
+" quick-scope
+nmap <leader>q <Plug>(QuickScopeToggle)
+vmap <leader>q <Plug>(QuickScopeToggle)
+
+
+
+" Copy to clipbord
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
+
+
+" Fzf bindings
+nnoremap <leader>ff       :Files<CR> 
+nnoremap <leader>pf       :GFiles<CR>
+nnoremap <leader>fl       :Lines<CR>
+nnoremap <leader>bl       :BLines<CR>
+nnoremap <leader>bb       :Buffers<CR>
+nnoremap <leader>*        :Rg <C-R><C-W><CR>
+nnoremap <leader>rg       :Rg!<CR>
+nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
+nnoremap <leader>C        :Colors<CR>
+nnoremap <leader>ww       :Windows<CR>
+nnoremap <leader>m        :History<CR>
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" -------------------- LSP ---------------------------------
+"
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    inoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    inoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    
+    " refer to doc to add more commands
+endfunction
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+
+" Tab Completion
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+" allow modifying the completeopt variable, or it will
+" be overridden all the time
+let g:asyncomplete_auto_completeopt = 0
+
+set completeopt=menuone,noinsert,noselect,preview
+
+
+"To auto close preview window when completion is done.
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+

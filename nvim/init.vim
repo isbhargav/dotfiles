@@ -32,6 +32,9 @@ Plug 'jiangmiao/auto-pairs'
 " provide additional text objects
 Plug 'wellle/targets.vim'
 
+" Swap arguments
+Plug 'AndrewRadev/sideways.vim'
+
 " Indentation as text-object for languages like python
 Plug 'michaeljsmith/vim-indent-object'
 
@@ -55,6 +58,12 @@ Plug 'mattn/vim-gist'
 " fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
+" Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
 
 " Status line
 Plug 'itchyny/lightline.vim'
@@ -137,6 +146,39 @@ aug FixTypos
     :command! Q q
 aug end
 
+
+" abbreviations 
+" Debug function for C++
+iabbrev cdebug 
+\<cr>void __print(int x) {cerr << x;}
+\<cr>void __print(long x) {cerr << x;}
+\<cr>void __print(long long x) {cerr << x;}
+\<cr>void __print(unsigned x) {cerr << x;}
+\<cr>void __print(unsigned long x) {cerr << x;}
+\<cr>void __print(unsigned long long x) {cerr << x;}
+\<cr>void __print(float x) {cerr << x;}
+\<cr>void __print(double x) {cerr << x;}
+\<cr>void __print(long double x) {cerr << x;}
+\<cr>void __print(char x) {cerr << '\'' << x << '\'';}
+\<cr>void __print(const char *x) {cerr << '\"' << x << '\"';}
+\<cr>void __print(const string &x) {cerr << '\"' << x << '\"';}
+\<cr>void __print(bool x) {cerr << (x ? "true" : "false");}
+\<cr>
+\<cr>template<typename T, typename V>
+\<cr>void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ','; __print(x.second); cerr << '}';}
+\<cr>template<typename T>
+\<cr>void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? "," : ""), __print(i); cerr << "}";}
+\<cr>void _print() {cerr << "]\n";}
+\<cr>template <typename T, typename... V>
+\<cr>void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+\<cr>#ifndef ONLINE_JUDGE
+\<cr>#define debug(x...) cerr << "[" << #x << "] = ["; _print(x)
+\<cr>#else
+\<cr>#define debug(x...)
+\<cr>#endif
+\<cr> //
+
+
 let g:lightline = {
       \ 'colorscheme': 'default',
       \ 'active': {
@@ -155,8 +197,7 @@ let g:lightline = {
       \ },
       \ }
 
-" Show diff from last saved changes(:DiffOrign works great with ]c and [c to
-" jump to changes)
+" Show diff from last saved changes(:DiffOrign works great with ]c and [c to jump to changes)
 if !exists(":DiffOrig")
   command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
   \ | diffthis | wincmd p | diffthis
@@ -173,13 +214,47 @@ call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vi
 
 "" ColorScheme
 set termguicolors     " enable true colors support
-" let base16colorspace=256  " Access colors present in 256 colorspace
+let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
-colorscheme gruvbox
-" colorscheme base16-default-dark
+" colorscheme gruvbox
+" colorscheme base16-solarflare
+colorscheme base16-tomorrow-night
 
 " map leader key
 let mapleader = ' '
+
+" NERDtree like setup for Netrw
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+" Open automaticaly 
+" augroup ProjectDrawer
+"   autocmd!
+"   autocmd VimEnter * :Vexplore
+" augroup END
+" Toggle Vexplore with Ctrl-E
+function! ToggleVExplorer()
+  if exists("t:expl_buf_num")
+      let expl_win_num = bufwinnr(t:expl_buf_num)
+      if expl_win_num != -1
+          let cur_win_nr = winnr()
+          exec expl_win_num . 'wincmd w'
+          close
+          exec cur_win_nr . 'wincmd w'
+          unlet t:expl_buf_num
+      else
+          unlet t:expl_buf_num
+      endif
+  else
+      exec '1wincmd w'
+      Vexplore
+      let t:expl_buf_num = bufnr("%")
+  endif
+endfunction
+map <silent> <C-E> :call ToggleVExplorer()<CR>
+
 
 
 " Zoom a split window in a tab/ close it
@@ -189,10 +264,10 @@ nnoremap <leader>,zc :tabclose<cr>
 " Switch Windows with leader+ hjkl
 nnoremap <leader>ws :split<CR>
 nnoremap <leader>wv :vert split<CR>
-nnoremap <leader>wh :wincmd h<CR>
-nnoremap <leader>wj :wincmd j<CR>
-nnoremap <leader>wk :wincmd k<CR>
-nnoremap <leader>wl :wincmd l<CR>
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>j :wincmd j<CR>
+nnoremap <leader>k :wincmd k<CR>
+nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
@@ -227,8 +302,15 @@ vmap < <gv
 "playback with Q
 nnoremap Q @q
 
-" Y similar to C and D
-nmap Y "y$
+" Y similar to C and D in normal mode
+nnoremap Y yg_
+
+" reamap of z=
+nnoremap <leader>=
+
+" Insert at the beging or end in visual-line selection using I or A
+vnoremap I <C-V>0I
+vnoremap A <C-V>$A
 
 
 " Select pasted last pasted similar to gv
@@ -253,11 +335,13 @@ vmap   //      gc
 nmap <leader>e <Plug>(EasyAlign)
 vmap <leader>e <Plug>(EasyAlign)
 
+" vim sideways plugin
+nnoremap <c-h> :SidewaysLeft<cr>
+nnoremap <c-l> :SidewaysRight<cr>
+
 " quick-scope
 nmap <leader>q <Plug>(QuickScopeToggle)
 vmap <leader>q <Plug>(QuickScopeToggle)
-
-
 
 " Copy to clipbord
 noremap <Leader>y "*y
@@ -272,12 +356,20 @@ nnoremap <leader>pf       :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
 nnoremap <leader>bl       :BLines<CR>
 nnoremap <leader>bb       :Buffers<CR>
+nnoremap <leader>ww       :Windows<CR>
 nnoremap <leader>*        :Rg <C-R><C-W><CR>
 nnoremap <leader>rg       :Rg!<CR>
 nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
 nnoremap <leader>C        :Colors<CR>
-nnoremap <leader>ww       :Windows<CR>
 nnoremap <leader>m        :History<CR>
+
+" Telescope bindings
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fc <cmd>Telescope colorscheme<cr>
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -469,8 +561,8 @@ EOF
 " Lspsaga mappings
 nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
 nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
-nnoremap <silent> gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
-nnoremap <silent> gD <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent><leader>gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
 nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
@@ -480,8 +572,9 @@ nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_sag
 nnoremap <silent>rn <cmd>lua require('lspsaga.rename').rename()<CR>
 nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
 nnoremap <silent><leader>cc <cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
-nnoremap <silent> [e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
-nnoremap <silent> ]e <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
+nnoremap <silent> [d <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
+nnoremap <silent> ]d <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
+
 nnoremap <silent> <A-d> <cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>
 tnoremap <silent> <A-d> <C-\><C-n>:lua require('lspsaga.floaterm').close_float_terminal()<CR>
 
@@ -497,4 +590,4 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 set shortmess+=c
 let g:completion_enable_auto_hover = 1
 let g:completion_enable_auto_signature = 1
-" -------------------- LSP ---------------------------------f
+"-------------------- LSP ---------------------------------f
