@@ -14,6 +14,9 @@ Plug 'AndrewRadev/splitjoin.vim'
 " better traget with f & t 
 Plug 'unblevable/quick-scope'
 
+" Better moving accoss the file
+Plug 'easymotion/vim-easymotion'
+
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
 
@@ -54,6 +57,8 @@ Plug 'airblade/vim-rooter'
 " in it)
 Plug 'mattn/webapi-vim'
 Plug 'mattn/vim-gist'
+Plug 'vim-scripts/DrawIt'
+Plug 'dhruvasagar/vim-table-mode'
 
 " fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -71,6 +76,7 @@ Plug 'itchyny/lightline.vim'
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
 Plug 'chriskempson/base16-vim'
+Plug 'ciaranm/inkpot'
 
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -85,9 +91,10 @@ Plug 'kyazdani42/nvim-web-devicons'
 " Seamless tmux and vim navigation
 Plug 'vim-scripts/YankRing.vim'
 
+" Debugging with VIM
+Plug 'mfussenegger/nvim-dap'
 " neovim lsp plugins
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'glepnir/lspsaga.nvim'
 Plug 'ray-x/lsp_signature.nvim'
@@ -214,11 +221,11 @@ call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vi
 
 "" ColorScheme
 set termguicolors     " enable true colors support
-let base16colorspace=256  " Access colors present in 256 colorspace
+" let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
-" colorscheme gruvbox
+colorscheme gruvbox
 " colorscheme base16-solarflare
-colorscheme base16-tomorrow-night
+" colorscheme base16-tomorrow-night
 
 " map leader key
 let mapleader = ' '
@@ -309,8 +316,8 @@ nnoremap Y yg_
 nnoremap <leader>=
 
 " Insert at the beging or end in visual-line selection using I or A
-vnoremap I <C-V>0I
-vnoremap A <C-V>$A
+" vnoremap I <C-V>0I
+" vnoremap A <C-V>$A
 
 
 " Select pasted last pasted similar to gv
@@ -332,8 +339,8 @@ vmap   //      gc
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
-nmap <leader>e <Plug>(EasyAlign)
-vmap <leader>e <Plug>(EasyAlign)
+nmap <leader>a <Plug>(LiveEasyAlign)
+vmap <leader>a <Plug>(LiveEasyAlign)
 
 " vim sideways plugin
 nnoremap <c-h> :SidewaysLeft<cr>
@@ -342,6 +349,14 @@ nnoremap <c-l> :SidewaysRight<cr>
 " quick-scope
 nmap <leader>q <Plug>(QuickScopeToggle)
 vmap <leader>q <Plug>(QuickScopeToggle)
+
+" Table Mode
+nnoremap <leader>ti :TableModeEnable<cr>
+nnoremap <leader>ts :TableModeDisable<cr>
+
+" Easy Motion
+" s{char}{char} to move to {char}{char}
+nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
 
 " Copy to clipbord
 noremap <Leader>y "*y
@@ -473,6 +488,7 @@ inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 
+" Configurations for Rust tools
 :lua << EOF
 local opts = {
     tools = { -- rust-tools options
@@ -507,7 +523,7 @@ local opts = {
 
             -- prefix for all the other hints (type, chaining)
             -- default: "=>"
-            other_hints_prefix  = "=>",
+            other_hints_prefix  = "» ",
 
             -- whether to align to the lenght of the longest line in the file
             max_len_align = false,
@@ -552,11 +568,12 @@ EOF
 local saga = require 'lspsaga'
 saga.init_lsp_saga { }
 
---  vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
---  vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
---  vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
---  vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
 EOF
+" --  vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
+" --  vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
+" --  vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
+" --  vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
+" EOF
 
 " Lspsaga mappings
 nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
@@ -591,3 +608,39 @@ set shortmess+=c
 let g:completion_enable_auto_hover = 1
 let g:completion_enable_auto_signature = 1
 "-------------------- LSP ---------------------------------f
+
+:lua << EOF
+local dap = require('dap')
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/opt/homebrew/opt/llvm/bin/lldb-vscode', 
+  name = "lldb"
+}
+
+
+dap.configurations.cpp = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false,
+  },
+}
+EOF

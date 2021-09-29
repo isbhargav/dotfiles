@@ -12,7 +12,11 @@ Plug 'tpope/vim-abolish'
 Plug 'AndrewRadev/splitjoin.vim'
 
 " better traget with f & t 
-Plug 'unblevable/quick-scope'
+" Plug 'unblevable/quick-scope'
+Plug 'tpope/vim-dispatch'
+
+" Easy motion
+Plug 'easymotion/vim-easymotion'
 
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
@@ -62,6 +66,10 @@ Plug 'itchyny/lightline.vim'
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
 Plug 'chriskempson/base16-vim'
+Plug 'itchyny/landscape.vim'
+Plug 'vim-scripts/DrawIt'
+Plug 'dhruvasagar/vim-table-mode'
+
 
 " Comment Plugin
 Plug 'tpope/vim-commentary'
@@ -69,12 +77,17 @@ Plug 'tpope/vim-commentary'
 " Seamless tmux and vim navigation
 Plug 'vim-scripts/YankRing.vim'
 
+" scafold with templates
+Plug 'pgilad/vim-skeletons'
+
 " vim lsp plugins
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
+" Code Format
+Plug 'Chiel92/vim-autoformat'
 " Initialize plugin system
 call plug#end()
 
@@ -100,6 +113,7 @@ set smartcase                         " Must be used with ignorecase inoreder to
 set path+=**                          " Search all the subdirectories recursively
 set dictionary+=/usr/share/dict/words " dictionary completion
 set noshowmode                        " status bar displays mode so no need for vim
+set noeb vb t_vb=                     " Turn of flashing and bell sound
 
 
 " " Let's save undo info!
@@ -145,10 +159,10 @@ endif
 " set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
-colorscheme gruvbox
+colorscheme landscape
 " colorscheme base16-default-dark
 
-" map leader key
+" map leader key ( space )
 let mapleader = ' '
 
 " NERDtree like setup for Netrw
@@ -157,6 +171,7 @@ let g:netrw_liststyle = 3
 let g:netrw_browse_split = 4
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
+let skeletons#autoRegister = 1
 " Open automaticaly 
 " augroup ProjectDrawer
 "   autocmd!
@@ -181,7 +196,7 @@ function! ToggleVExplorer()
       let t:expl_buf_num = bufnr("%")
   endif
 endfunction
-map <silent> <C-E> :call ToggleVExplorer()<CR>
+map <silent> <leader>pt :call ToggleVExplorer()<CR>
 
 " Zoom a split window in a tab/ close it
 nnoremap <leader>,zo :tabnew %<cr>
@@ -229,11 +244,11 @@ vmap < <gv
 nnoremap Q @q
 
 " Y similar to C and D
-nmap Y "y$
-
+nmap Y yg_
 
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
+
 
 " Fancy Vscode like move lines (this thing messes with V-Line when key repeat is high)
 vnoremap <S-Down> :m '>+1<CR>gv=gv
@@ -255,8 +270,8 @@ nmap <leader>e <Plug>(EasyAlign)
 vmap <leader>e <Plug>(EasyAlign)
 
 " quick-scope
-nmap <leader>q <Plug>(QuickScopeToggle)
-vmap <leader>q <Plug>(QuickScopeToggle)
+" nmap <leader>q <Plug>(QuickScopeToggle)
+" vmap <leader>q <Plug>(QuickScopeToggle)
 
 
 
@@ -268,15 +283,15 @@ noremap <Leader>P "+p
 
 
 " Fzf bindings
-nnoremap <leader>ff       :Files<CR> 
+nnoremap <leader>ff       :Files<CR>
 nnoremap <leader>pf       :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
 nnoremap <leader>bl       :BLines<CR>
 nnoremap <leader>bb       :Buffers<CR>
+nnoremap <leader>cc        :Colors<CR>
 nnoremap <leader>*        :Rg <C-R><C-W><CR>
 nnoremap <leader>rg       :Rg!<CR>
 nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
-nnoremap <leader>C        :Colors<CR>
 nnoremap <leader>ww       :Windows<CR>
 nnoremap <leader>m        :History<CR>
 
@@ -342,4 +357,28 @@ set completeopt=menuone,noinsert,noselect,preview
 
 "To auto close preview window when completion is done.
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+
+if has("autocmd")
+  augroup templates
+    autocmd BufNewFile *.cpp 0r ~/.vim/plugged/vim-skeletons/skeletons/skeleton.cpp
+  augroup END
+endif
+
+
+" decimal pseudo-text object (integer and float)
+" ---------------------------------------------
+" cid did
+function! Numbers()
+  call search('\d\([^0-9\.]\|$\)', 'cW')
+  normal v
+  call search('\(^\|[^0-9\.]\d\)', 'becW')
+endfunction
+xnoremap id :<C-u>call Numbers()<CR>
+onoremap id :normal vid<CR>
+
+
+" Dispatch 
+autocmd FileType cpp let b:dispatch = 'g++ -std=c++17  -Wshadow -Wall -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG %'
+
 
