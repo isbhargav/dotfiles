@@ -159,10 +159,10 @@ bindkey "\e[1;3C" forward-word # ⌥→
 #
 # Example aliases
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias l='exa --sort Name'
-alias ll='exa --sort Name --long'
-alias la='exa --sort Name --long --all'
-alias lt='exa --sort Name --long --tree'
+alias  l='exa --icons --sort Name'
+alias ll='exa --icons --sort Name --long'
+alias la='exa --icons --sort Name --long --all'
+alias lt='exa --icons --sort Name --long --tree'
 alias cpwd='pwd | pbcopy'
 alias zshconf="nvim ~/.zshrc"
 alias zshso="source ~/.zshrc"
@@ -209,3 +209,4 @@ unset __conda_setup
 
 # Used for readelf and objdump
 export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"

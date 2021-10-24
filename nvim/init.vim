@@ -17,6 +17,9 @@ Plug 'unblevable/quick-scope'
 " Better moving accoss the file
 Plug 'easymotion/vim-easymotion'
 
+" Multi Cursor support in vim
+Plug 'terryma/vim-multiple-cursors'
+
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
 
@@ -49,6 +52,7 @@ Plug 'isbhargav/vim-clear-highlight'
 
 " Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
+Plug 'lambdalisue/fern.vim'
 
 " Sennsibly set project root
 Plug 'airblade/vim-rooter'
@@ -75,8 +79,13 @@ Plug 'itchyny/lightline.vim'
 
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
-Plug 'chriskempson/base16-vim'
+"Plug 'chriskempson/base16-vim'
 Plug 'ciaranm/inkpot'
+Plug 'jacoborus/tender.vim'
+Plug 'sjl/badwolf'
+Plug 'kiranps/material'
+Plug 'isbhargav/gruber-darker-vim'
+
 
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -149,8 +158,9 @@ aug FixTypos
     :command! Wq wq
     :command! QA qa
     :command! Qa qa
-    :command! W w
-    :command! Q q
+    :command! W  w
+    :command! Q  q
+    :cmap     Q! q!
 aug end
 
 
@@ -217,13 +227,14 @@ endif
 " nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
 
 " add icons to dirvish drawer
-call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vim.fn.fnamemodify('" .. p .. "', ':e')) or ' '")})
+" call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vim.fn.fnamemodify('" .. p .. "', ':e')) or ' '")})
 
 "" ColorScheme
-set termguicolors     " enable true colors support
+" set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
-set background=dark
-colorscheme gruvbox
+" set background=dark
+" colorscheme gruvbox
+colorscheme GruberDarker
 " colorscheme base16-solarflare
 " colorscheme base16-tomorrow-night
 
@@ -356,7 +367,7 @@ nnoremap <leader>ts :TableModeDisable<cr>
 
 " Easy Motion
 " s{char}{char} to move to {char}{char}
-nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
+" nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
 
 " Copy to clipbord
 noremap <Leader>y "*y
@@ -460,7 +471,7 @@ EOF
 
 local nvim_lsp = require('lspconfig')
 local cfg = {
- bind = true, -- This is mandatory, otherwise border config won't get registered.
+  bind = false, -- This is mandatory, otherwise border config won't get registered.
                -- If you want to hook lspsaga or other signature handler, pls set to false
   doc_lines = 10, -- only show one line of comment set to 0 if you do not want API comments be shown
 
@@ -578,6 +589,7 @@ EOF
 " Lspsaga mappings
 nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
 nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
+" nnoremap <silent> K <cmd>lua  vim.lsp.buf.hover()<CR>    
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent><leader>gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
@@ -607,40 +619,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 set shortmess+=c
 let g:completion_enable_auto_hover = 1
 let g:completion_enable_auto_signature = 1
-"-------------------- LSP ---------------------------------f
+"-------------------- LSP ---------------------------------
+"
+fu PyRun() range
+  echo system('python -c ' . shellescape(join(getline(a:firstline, a:lastline), "\n")))
+endf
 
-:lua << EOF
-local dap = require('dap')
-dap.adapters.lldb = {
-  type = 'executable',
-  command = '/opt/homebrew/opt/llvm/bin/lldb-vscode', 
-  name = "lldb"
-}
-
-
-dap.configurations.cpp = {
-  {
-    name = "Launch",
-    type = "lldb",
-    request = "launch",
-    program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    end,
-    cwd = '${workspaceFolder}',
-    stopOnEntry = false,
-    args = {},
-
-    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
-    --
-    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
-    --
-    -- Otherwise you might get the following error:
-    --
-    --    Error on launch: Failed to attach to the target process
-    --
-    -- But you should be aware of the implications:
-    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
-    runInTerminal = false,
-  },
-}
-EOF

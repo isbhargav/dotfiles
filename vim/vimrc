@@ -18,6 +18,10 @@ Plug 'tpope/vim-dispatch'
 " Easy motion
 Plug 'easymotion/vim-easymotion'
 
+" Multi Cursor support in vim
+Plug 'terryma/vim-multiple-cursors'
+
+
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
 
@@ -65,8 +69,15 @@ Plug 'itchyny/lightline.vim'
 
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
-Plug 'chriskempson/base16-vim'
+" Plug 'chriskempson/base16-vim'
 Plug 'itchyny/landscape.vim'
+Plug 'ciaranm/inkpot'
+Plug 'jacoborus/tender.vim'
+Plug 'sjl/badwolf'
+Plug 'kiranps/material'
+Plug 'isbhargav/gruber-darker-vim'
+
+
 Plug 'vim-scripts/DrawIt'
 Plug 'dhruvasagar/vim-table-mode'
 
@@ -88,6 +99,8 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " Code Format
 Plug 'Chiel92/vim-autoformat'
+Plug 'dense-analysis/ale'
+
 " Initialize plugin system
 call plug#end()
 
@@ -138,6 +151,7 @@ aug FixTypos
     :command! Qa qa
     :command! W w
     :command! Q q
+    :cmap     Q! q!
 aug end
 
 
@@ -156,10 +170,11 @@ endif
 
 
 "" ColorScheme
-" set termguicolors     " enable true colors support
+" set termguicolors     " enable true colors support(24bit colors)
 " let base16colorspace=256  " Access colors present in 256 colorspace
-set background=dark
-colorscheme landscape
+" set background=dark
+" colorscheme tender
+colorscheme GruberDarker
 " colorscheme base16-default-dark
 
 " map leader key ( space )
@@ -324,6 +339,9 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> gi <plug>(lsp-implementation)
     nmap <buffer> gt <plug>(lsp-type-definition)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> <leader>dd <plug>(lsp-document-diagnostics)
+    nmap <buffer> <leader>ca <plug>(lsp-code-action)
+    nmap <buffer> <leader>cc <plug>(lsp-code-lens)
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
@@ -358,12 +376,15 @@ set completeopt=menuone,noinsert,noselect,preview
 "To auto close preview window when completion is done.
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-
-if has("autocmd")
-  augroup templates
-    autocmd BufNewFile *.cpp 0r ~/.vim/plugged/vim-skeletons/skeletons/skeleton.cpp
-  augroup END
-endif
+" Diable ALE LSP support and let Vim-lsp do it
+let g:ale_disable_lsp = 1
+let g:lsp_diagnostics_float_delay = 200
+let g:lsp_diagnostics_float_cursor = 1
+" let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_signs_error = {'text': '✗'}
+let g:lsp_diagnostics_virtual_text_prefix = " ‣ "
+let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
+let g:lsp_diagnostics_highlights_enabled = 0
 
 
 " decimal pseudo-text object (integer and float)
@@ -377,6 +398,10 @@ endfunction
 xnoremap id :<C-u>call Numbers()<CR>
 onoremap id :normal vid<CR>
 
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'pyhton': ['black'],
+\}
 
 " Dispatch 
 autocmd FileType cpp let b:dispatch = 'g++ -std=c++17  -Wshadow -Wall -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG %'
