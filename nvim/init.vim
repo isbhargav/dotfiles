@@ -1,4 +1,4 @@
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 " Make sure you use single quotes
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
@@ -16,9 +16,6 @@ Plug 'unblevable/quick-scope'
 
 " Better moving accoss the file
 Plug 'easymotion/vim-easymotion'
-
-" Multi Cursor support in vim
-Plug 'terryma/vim-multiple-cursors'
 
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
@@ -52,7 +49,6 @@ Plug 'isbhargav/vim-clear-highlight'
 
 " Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
-Plug 'lambdalisue/fern.vim'
 
 " Sennsibly set project root
 Plug 'airblade/vim-rooter'
@@ -79,16 +75,12 @@ Plug 'itchyny/lightline.vim'
 
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
-"Plug 'chriskempson/base16-vim'
+Plug 'chriskempson/base16-vim'
 Plug 'ciaranm/inkpot'
-Plug 'jacoborus/tender.vim'
-Plug 'sjl/badwolf'
-Plug 'kiranps/material'
-Plug 'isbhargav/gruber-darker-vim'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main'  }
 
 
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
 
 " Comment Plugin
@@ -97,16 +89,17 @@ Plug 'tpope/vim-commentary'
 " icons
 Plug 'kyazdani42/nvim-web-devicons'
 
-" Seamless tmux and vim navigation
-Plug 'vim-scripts/YankRing.vim'
-
 " Debugging with VIM
 Plug 'mfussenegger/nvim-dap'
+
 " neovim lsp plugins
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
-Plug 'glepnir/lspsaga.nvim'
-Plug 'ray-x/lsp_signature.nvim'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
 Plug 'simrat39/rust-tools.nvim'
 " Initialize plugin system
 call plug#end()
@@ -164,40 +157,9 @@ aug FixTypos
 aug end
 
 
-" abbreviations 
-" Debug function for C++
-iabbrev cdebug 
-\<cr>void __print(int x) {cerr << x;}
-\<cr>void __print(long x) {cerr << x;}
-\<cr>void __print(long long x) {cerr << x;}
-\<cr>void __print(unsigned x) {cerr << x;}
-\<cr>void __print(unsigned long x) {cerr << x;}
-\<cr>void __print(unsigned long long x) {cerr << x;}
-\<cr>void __print(float x) {cerr << x;}
-\<cr>void __print(double x) {cerr << x;}
-\<cr>void __print(long double x) {cerr << x;}
-\<cr>void __print(char x) {cerr << '\'' << x << '\'';}
-\<cr>void __print(const char *x) {cerr << '\"' << x << '\"';}
-\<cr>void __print(const string &x) {cerr << '\"' << x << '\"';}
-\<cr>void __print(bool x) {cerr << (x ? "true" : "false");}
-\<cr>
-\<cr>template<typename T, typename V>
-\<cr>void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ','; __print(x.second); cerr << '}';}
-\<cr>template<typename T>
-\<cr>void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? "," : ""), __print(i); cerr << "}";}
-\<cr>void _print() {cerr << "]\n";}
-\<cr>template <typename T, typename... V>
-\<cr>void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
-\<cr>#ifndef ONLINE_JUDGE
-\<cr>#define debug(x...) cerr << "[" << #x << "] = ["; _print(x)
-\<cr>#else
-\<cr>#define debug(x...)
-\<cr>#endif
-\<cr> //
-
 
 let g:lightline = {
-      \ 'colorscheme': 'default',
+      \ 'colorscheme': 'one',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]]
@@ -226,53 +188,16 @@ endif
 " Disable search highlighting
 " nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
 
-" add icons to dirvish drawer
-" call dirvish#add_icon_fn({p -> luaeval("require('nvim-web-devicons').get_icon(vim.fn.fnamemodify('" .. p .. "', ':e')) or ' '")})
-
 "" ColorScheme
 " set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
-" set background=dark
-" colorscheme gruvbox
-colorscheme GruberDarker
+set background=dark
+colorscheme tokyonight
 " colorscheme base16-solarflare
 " colorscheme base16-tomorrow-night
 
 " map leader key
 let mapleader = ' '
-
-" NERDtree like setup for Netrw
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
-let g:netrw_winsize = 25
-" Open automaticaly 
-" augroup ProjectDrawer
-"   autocmd!
-"   autocmd VimEnter * :Vexplore
-" augroup END
-" Toggle Vexplore with Ctrl-E
-function! ToggleVExplorer()
-  if exists("t:expl_buf_num")
-      let expl_win_num = bufwinnr(t:expl_buf_num)
-      if expl_win_num != -1
-          let cur_win_nr = winnr()
-          exec expl_win_num . 'wincmd w'
-          close
-          exec cur_win_nr . 'wincmd w'
-          unlet t:expl_buf_num
-      else
-          unlet t:expl_buf_num
-      endif
-  else
-      exec '1wincmd w'
-      Vexplore
-      let t:expl_buf_num = bufnr("%")
-  endif
-endfunction
-map <silent> <C-E> :call ToggleVExplorer()<CR>
-
 
 
 " Zoom a split window in a tab/ close it
@@ -320,33 +245,8 @@ vmap < <gv
 "playback with Q
 nnoremap Q @q
 
-" Y similar to C and D in normal mode
-nnoremap Y yg_
-
-" reamap of z=
-nnoremap <leader>=
-
-" Insert at the beging or end in visual-line selection using I or A
-" vnoremap I <C-V>0I
-" vnoremap A <C-V>$A
-
-
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
-
-" Fancy Vscode like move lines (this thing messes with V-Line when key repeat is high)
-vnoremap <S-Down> :m '>+1<CR>gv=gv
-vnoremap <S-Up> :m '<-2<CR>gv=gv
-vnoremap <S-Right>  xpgvlolo
-vnoremap <S-left>   xhPgvhoho
-" vnoremap <S-Down>   xjPgvjojo
-" vnoremap <S-Up>     xkPgvkoko
-
-" Vim commentry leader+ /
-vmap <leader>/ gc
-nmap <leader>/ gcc
-vmap   //      gc
-
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
@@ -367,7 +267,7 @@ nnoremap <leader>ts :TableModeDisable<cr>
 
 " Easy Motion
 " s{char}{char} to move to {char}{char}
-" nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
+nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
 
 " Copy to clipbord
 noremap <Leader>y "*y
@@ -375,27 +275,13 @@ noremap <Leader>p "*p
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
-
-" Fzf bindings
-nnoremap <leader>ff       :Files<CR> 
-nnoremap <leader>pf       :GFiles<CR>
-nnoremap <leader>fl       :Lines<CR>
-nnoremap <leader>bl       :BLines<CR>
-nnoremap <leader>bb       :Buffers<CR>
-nnoremap <leader>ww       :Windows<CR>
-nnoremap <leader>*        :Rg <C-R><C-W><CR>
-nnoremap <leader>rg       :Rg!<CR>
-nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
-nnoremap <leader>C        :Colors<CR>
-nnoremap <leader>m        :History<CR>
-
 " Telescope bindings
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-nnoremap <leader>fc <cmd>Telescope colorscheme<cr>
+nnoremap <leader>rg <cmd>Telescope live_grep<cr>
+nnoremap <leader>bb <cmd>Telescope buffers<cr>
+nnoremap <leader>t <cmd>Telescope help_tags<cr>
+nnoremap <leader>C <cmd>Telescope colorscheme<cr>
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -414,92 +300,102 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " -------------------- LSP ---------------------------------
-" Treesitter Hiighlighting
-:lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  highlight = {
+:lua << EOF
+require "nvim-treesitter.configs".setup {
+  playground = {
     enable = true,
-  },
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  }
 }
+
 EOF
 
-:lua << EOF
+" ------------------------ nvim-cmp ---------------------------------------
+:lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
 
-vim.o.completeopt = "menuone,noinsert,noselect"
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    mapping = {
+      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
 
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-  };
-}
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
 
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    return t "<S-Tab>"
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  -- Setup lspconfig.
+  local nvim_lsp = require('lspconfig')
+  local servers = { "pyright", "clangd", "tsserver"}
+  for _, lsp in ipairs(servers) do
+    nvim_lsp[lsp].setup{
+      capabilities = capabilities,
+      on_attach = on_attch
+    }
   end
-end
 
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 EOF
 
-:lua << EOF
 
-local nvim_lsp = require('lspconfig')
-local cfg = {
-  bind = false, -- This is mandatory, otherwise border config won't get registered.
-               -- If you want to hook lspsaga or other signature handler, pls set to false
-  doc_lines = 10, -- only show one line of comment set to 0 if you do not want API comments be shown
-
-  hint_enable = true, -- virtual hint enable
-  hint_prefix = " ", -- Panda for parameter
-  hint_scheme = "String",
-
-  handler_opts = {
-    border = "shadow"   -- double, single, shadow, none
-  },
-  decorator = {"`", "`"}  -- or decorator = {"***", "***"}  decorator = {"**", "**"} see markdown help
-}
-require("lsp_signature").on_attach(cfg)
-
-local servers = { "pyright", "clangd", "tsserver"}
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup{}
-end
-EOF
- 
-" nvim-compe mapping
-inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
-" Configurations for Rust tools
+" -------------------------------------------- Configurations for Rust tools
 :lua << EOF
 local opts = {
     tools = { -- rust-tools options
@@ -574,40 +470,10 @@ local opts = {
 require('rust-tools').setup(opts)
 
 EOF
-" LSP Saga config
-:lua << EOF
-local saga = require 'lspsaga'
-saga.init_lsp_saga { }
 
-EOF
-" --  vim.lsp.handlers["textDocument/signatureHelp"] = require('lspsaga.signaturehelp').signature_help
-" --  vim.lsp.handlers["textDocument/hover"] = require('lspsaga.hover').render_hover_doc
-" --  vim.lsp.handlers["textDocument/definition"] = require('lspsaga.provider').preview_definition
-" --  vim.lsp.handlers['textDocument/codeAction'] = require('lspsaga.codeaction').code_action
-" EOF
-
-" Lspsaga mappings
-nnoremap <silent> gh <cmd>lua require'lspsaga.provider'.lsp_finder()<CR>
-nnoremap <silent> K <cmd>lua require('lspsaga.hover').render_hover_doc()<CR>
-" nnoremap <silent> K <cmd>lua  vim.lsp.buf.hover()<CR>    
-nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent><leader>gd <cmd>lua require'lspsaga.provider'.preview_definition()<CR>
-nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> gs <cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>
-nnoremap <silent><leader>ca <cmd>lua require('lspsaga.codeaction').code_action()<CR>
-vnoremap <silent><leader>ca :<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>
-nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
-nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-nnoremap <silent>rn <cmd>lua require('lspsaga.rename').rename()<CR>
-nnoremap <silent><leader>cd <cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>
-nnoremap <silent><leader>cc <cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>
-nnoremap <silent> [d <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>
-nnoremap <silent> ]d <cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>
-
-nnoremap <silent> <A-d> <cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>
-tnoremap <silent> <A-d> <C-\><C-n>:lua require('lspsaga.floaterm').close_float_terminal()<CR>
 
 " " Completion
+
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -620,8 +486,20 @@ set shortmess+=c
 let g:completion_enable_auto_hover = 1
 let g:completion_enable_auto_signature = 1
 "-------------------- LSP ---------------------------------
-"
-fu PyRun() range
-  echo system('python -c ' . shellescape(join(getline(a:firstline, a:lastline), "\n")))
-endf
+
+ nnoremap <silent> gd        :lua vim.lsp.buf.definition()<CR>
+ nnoremap <silent> gD        :lua vim.lsp.buf.declaration()<CR>
+ nnoremap <silent> K         :lua vim.lsp.buf.hover()<CR>
+ nnoremap <silent> gi        :lua vim.lsp.buf.implementation()<CR>
+ nnoremap <silent> gs     :lua vim.lsp.buf.signature_help()<CR>
+ nnoremap <silent> <space>wa :lua vim.lsp.buf.add_workspace_folder()<CR>
+ nnoremap <silent> <space>wr :lua vim.lsp.buf.remove_workspace_folder()<CR>
+ nnoremap <silent> <space>wl :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
+ nnoremap <silent> <space>D  :lua vim.lsp.buf.type_definition()<CR>
+ nnoremap <silent> <space>rn :lua vim.lsp.buf.rename()<CR>
+ nnoremap <silent> gr        :lua vim.lsp.buf.references()<CR>
+ nnoremap <silent> <space>e  :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+ nnoremap <silent> [d        :lua vim.lsp.diagnostic.goto_prev()<CR>
+ nnoremap <silent> ]d        :lua vim.lsp.diagnostic.goto_next()<CR>
+ nnoremap <silent> <space>q  :lua vim.lsp.diagnostic.set_loclist()<CR>
 

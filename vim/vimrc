@@ -7,6 +7,13 @@ Plug 'godlygeek/tabular'
 
 " upper/lower/mixed/camel/title cra
 Plug 'tpope/vim-abolish'
+Plug 'glts/vim-magnum'
+Plug 'glts/vim-radical'
+
+" Notetaking vim
+Plug 'xolox/vim-notes'
+Plug 'xolox/vim-misc'
+
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
@@ -16,6 +23,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'tpope/vim-dispatch'
 
 " Easy motion
+Plug 'haya14busa/incsearch.vim'
 Plug 'easymotion/vim-easymotion'
 
 " Multi Cursor support in vim
@@ -30,6 +38,10 @@ Plug 'tpope/vim-surround'
 
 " Vim's defacto git integration
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-characterize'
+Plug 'tpope/vim-eunuch'
 
 " Navigate buffers,quicklist,arglist,locationlist with [,] keys
 Plug 'tpope/vim-unimpaired' 
@@ -69,13 +81,9 @@ Plug 'itchyny/lightline.vim'
 
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
-" Plug 'chriskempson/base16-vim'
-Plug 'itchyny/landscape.vim'
-Plug 'ciaranm/inkpot'
 Plug 'jacoborus/tender.vim'
-Plug 'sjl/badwolf'
-Plug 'kiranps/material'
 Plug 'isbhargav/gruber-darker-vim'
+Plug 'isbhargav/skittles_berry'
 
 
 Plug 'vim-scripts/DrawIt'
@@ -85,8 +93,8 @@ Plug 'dhruvasagar/vim-table-mode'
 " Comment Plugin
 Plug 'tpope/vim-commentary'
 
-" Seamless tmux and vim navigation
-Plug 'vim-scripts/YankRing.vim'
+"repeat
+Plug 'tpope/vim-repeat'
 
 " scafold with templates
 Plug 'pgilad/vim-skeletons'
@@ -97,9 +105,15 @@ Plug 'mattn/vim-lsp-settings'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
+
 " Code Format
 Plug 'Chiel92/vim-autoformat'
-Plug 'dense-analysis/ale'
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+" Go Lang Plugin
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries'  }
 
 " Initialize plugin system
 call plug#end()
@@ -127,7 +141,9 @@ set path+=**                          " Search all the subdirectories recursivel
 set dictionary+=/usr/share/dict/words " dictionary completion
 set noshowmode                        " status bar displays mode so no need for vim
 set noeb vb t_vb=                     " Turn of flashing and bell sound
+set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵
 
+" set diffopt+=vertical
 
 " " Let's save undo info!
 " " m h  dom mon dow   command
@@ -162,23 +178,53 @@ if !exists(":DiffOrig")
   \ | diffthis | wincmd p | diffthis
 endif 
 
+" Lightline scheme
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead'
+      \ },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" },
+      \ }
+
+
+" let g:lightline = {
+"       \ 'colorscheme': 'solarized',
+"       \}
 
 "This unsets the "last search pattern" register by hitting return
 " nnoremap <silent> <CR> :noh<CR><CR>
 " Disable search highlighting
 " nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
-
+"
+" Insearch
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
 
 "" ColorScheme
 " set termguicolors     " enable true colors support(24bit colors)
 " let base16colorspace=256  " Access colors present in 256 colorspace
-" set background=dark
+set background=dark
 " colorscheme tender
-colorscheme GruberDarker
+colorscheme tender
 " colorscheme base16-default-dark
 
 " map leader key ( space )
 let mapleader = ' '
+
+" override the netrw :Explore, :Sexplore, :Vexplore commands
+" let g:loaded_netrwPlugin = 1
+" command! -nargs=? -complete=dir Explore Dirvish <args>
+" command! -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
+" command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
+
+
 
 " NERDtree like setup for Netrw
 let g:netrw_banner = 0
@@ -187,12 +233,6 @@ let g:netrw_browse_split = 4
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
 let skeletons#autoRegister = 1
-" Open automaticaly 
-" augroup ProjectDrawer
-"   autocmd!
-"   autocmd VimEnter * :Vexplore
-" augroup END
-" Toggle Vexplore with Ctrl-E
 function! ToggleVExplorer()
   if exists("t:expl_buf_num")
       let expl_win_num = bufwinnr(t:expl_buf_num)
@@ -211,7 +251,58 @@ function! ToggleVExplorer()
       let t:expl_buf_num = bufnr("%")
   endif
 endfunction
+
+
+" Vim dirvish Drawer
+nnoremap <silent> <Plug>(dirvish-toggle) :<C-u>call <SID>dirvish_toggle()<CR>
+
+function! s:dirvish_toggle() abort
+  let l:last_buffer = bufnr('$')
+  let l:i = 1
+  let l:dirvish_already_open = 0
+
+  while l:i <= l:last_buffer
+    if bufexists(l:i) && bufloaded(l:i) && getbufvar(l:i, '&filetype') ==? 'dirvish'
+      let l:dirvish_already_open = 1
+      execute ':'.l:i.'bd!'
+    endif
+    let l:i += 1
+  endwhile
+
+  if !l:dirvish_already_open
+    setlocal nospr
+    35vsp +Dirvish 
+  endif
+endfunction
+
+function! s:dirvish_open() abort
+  let l:line = getline('.')
+  if l:line =~? '/$'
+    call dirvish#open('edit', 0)
+  else
+    call <SID>dirvish_toggle()
+    execute 'e '.l:line
+  endif
+endfunction
+
+augroup dirvish_commands
+  autocmd!
+  " autocmd FileType dirvish call fugitive#detect(@%)
+  autocmd FileType dirvish nnoremap <silent> <buffer> <C-r> :<C-u>Dirvish %<CR>
+  autocmd FileType dirvish unmap <silent> <buffer> <CR>
+  autocmd FileType dirvish nnoremap <silent> <buffer> <CR> :<C-u> call <SID>dirvish_open()<CR>
+  autocmd FileType dirvish setlocal nonumber norelativenumber statusline=%F
+  autocmd FileType dirvish setlocal splitright
+  autocmd FileType dirvish silent! keeppatterns g@\v/\.[^\/]+/?$@d
+  autocmd FileType dirvish execute ':sort r /[^\/]$/'
+augroup END
+
+" Open Project drawer with <leader>pt
 map <silent> <leader>pt :call ToggleVExplorer()<CR>
+" nmap <leader>pt <Plug>(dirvish-toggle)
+
+
+
 
 " Zoom a split window in a tab/ close it
 nnoremap <leader>,zo :tabnew %<cr>
@@ -227,6 +318,10 @@ nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
+
+
+
+
 
 
 " Switch between buffers and tabs 
@@ -259,24 +354,11 @@ vmap < <gv
 nnoremap Q @q
 
 " Y similar to C and D
-nmap Y yg_
+nmap Y y$
 
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
 
-
-" Fancy Vscode like move lines (this thing messes with V-Line when key repeat is high)
-vnoremap <S-Down> :m '>+1<CR>gv=gv
-vnoremap <S-Up> :m '<-2<CR>gv=gv
-vnoremap <S-Right>  xpgvlolo
-vnoremap <S-left>   xhPgvhoho
-" vnoremap <S-Down>   xjPgvjojo
-" vnoremap <S-Up>     xkPgvkoko
-
-" Vim commentry leader+ /
-vmap <leader>/ gc
-nmap <leader>/ gcc
-vmap   //      gc
 
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -298,17 +380,28 @@ noremap <Leader>P "+p
 
 
 " Fzf bindings
-nnoremap <leader>ff       :Files<CR>
-nnoremap <leader>pf       :GFiles<CR>
+" Execute Gfiles or Files based on how its setup
+nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? ':Files' : ':GFiles')."\<cr>"
+nnoremap <leader>pf       :Files .<CR>
+" nnoremap <leader>pf       :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
 nnoremap <leader>bl       :BLines<CR>
 nnoremap <leader>bb       :Buffers<CR>
-nnoremap <leader>cc        :Colors<CR>
+nnoremap <leader>C        :Colors<CR>
+" grep Word under Search 
 nnoremap <leader>*        :Rg <C-R><C-W><CR>
 nnoremap <leader>rg       :Rg!<CR>
 nnoremap <leader>ag       :Ag!<C-R><C-W><CR>
 nnoremap <leader>ww       :Windows<CR>
-nnoremap <leader>m        :History<CR>
+nnoremap <leader>t        :Tags<CR>
+" nnoremap <leader>m        :History<CR>
+
+" Fugutive
+nnoremap <leader>gs  :G<CR>
+" Merge Conflit
+" d2o - d3o
+
+
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -329,10 +422,15 @@ let g:fzf_colors =
 " -------------------- LSP ---------------------------------
 "
 function! s:on_lsp_buffer_enabled() abort
+
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
+    " Mappings
+    nmap <buffer> K <plug>(lsp-hover)
     nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gD vert
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gr <plug>(lsp-references)
@@ -344,7 +442,6 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <leader>cc <plug>(lsp-code-lens)
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
     inoremap <buffer> <expr><c-f> lsp#scroll(+4)
     inoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
@@ -378,10 +475,19 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Diable ALE LSP support and let Vim-lsp do it
 let g:ale_disable_lsp = 1
+" Delay for floating window
 let g:lsp_diagnostics_float_delay = 200
 let g:lsp_diagnostics_float_cursor = 1
 " let g:lsp_diagnostics_echo_cursor = 1
-let g:lsp_diagnostics_signs_error = {'text': '✗'}
+
+
+" `LspError` defaults to `E>`.
+" `LspHint` defaults to `H>`.
+" `LspInformation` defaults to `I>`.
+" `LspWarning` defaults to `W>`.
+" let g:lsp_diagnostics_signs_error = {'text': '✗ '}
+let g:lsp_diagnostics_signs_error = {'text': ''}
+let g:lsp_diagnostics_signs_warning = {'text': ''}
 let g:lsp_diagnostics_virtual_text_prefix = " ‣ "
 let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
 let g:lsp_diagnostics_highlights_enabled = 0
@@ -405,5 +511,24 @@ let g:ale_fixers = {
 
 " Dispatch 
 autocmd FileType cpp let b:dispatch = 'g++ -std=c++17  -Wshadow -Wall -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG %'
+" cpp config
+augroup cpp_config
+  autocmd!
+  autocmd FileType cpp set equalprg="clang-format"
+augroup end
 
+
+" adds to statusline
+set laststatus=2
+set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+
+" a little more informative version of the above
+nmap <Leader>sI :call <SID>SynStack()<CR>
+
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
 

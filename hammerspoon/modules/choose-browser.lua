@@ -13,6 +13,7 @@ local available_browsers = {
     {['text'] = "Safari",['subText'] = "Safari",['command'] = "com.apple.safari",['image'] = hs.image.imageFromPath(os.getenv("HOME") .. "/.hammerspoon/browsermenu/safari.png")},
     {['text'] = "Firefox",['subText'] = "Firefox",['command'] = "org.mozilla.firefox",['image'] = hs.image.imageFromPath(os.getenv("HOME") .. "/.hammerspoon/browsermenu/firefox.png")},
     {['text'] = "Google Chrome",['subText'] = "Google Chrome",['command'] = "com.google.chrome",['image'] = hs.image.imageFromPath(os.getenv("HOME") .. "/.hammerspoon/browsermenu/chrome.png")},
+    {['text'] = "Google Chrome Canary",['subText'] = "Google Chrome Canary",['command'] = "com.google.chrome.canary",['image'] = hs.image.imageFromPath(os.getenv("HOME") .. "/.hammerspoon/browsermenu/canary.png")},
     {['text'] = "Brave",['subText'] = "Brave",['command'] = "com.brave.Browser",['image'] = hs.image.imageFromPath(os.getenv("HOME") .. "/.hammerspoon/browsermenu/brave.png")},
 }
 
