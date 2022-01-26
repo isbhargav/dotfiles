@@ -81,8 +81,9 @@ ZSH_THEME="robbyrussell"
 
 plugins=(
   git
+  asdf
   brew
-  osx
+  macos
   tmux
   zsh-autosuggestions
   zsh-syntax-highlighting
@@ -137,7 +138,7 @@ export PAGER='less'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export ARCHFLAGS="-arch aarch64"
-# export ARCHFLAGS="-arch arm64"
+export ARCHFLAGS="-arch arm64"
 
 # defaults write -g InitialKeyRepeat -int 20 # normal minimum is 15 (225 ms)
 # defaults write -g KeyRepeat -int 1 # normal minimum is 2 (30 ms)
@@ -174,39 +175,45 @@ alias so='source'
 alias tm='tmux'
 alias typora="open -a typora"
 alias idea='nvim -c "cd ~/Eureka"'
-alias g++='g++ -std=c++17  -Wshadow -Wall -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG'
+alias g++='g++ -std=c++17 -Wall -Wextra -Wshadow -Wpedantic -Wnull-dereference -ggdb -gmodules -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG'
 alias ge="git rev-list --objects --all | awk '$2' | sort -k2 | uniq -cf1 | sort -rn | head"
+alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc"
+alias find-pkg='pkg-config --list-all | fzf |  cut -d " " -f1 | xargs -t pkg-config --libs --cflags'
+
 #########################################################################################
 
 # N node version manager - change installation path to $HOME/.n insted of /usr/local
-export N_PREFIX=$HOME/.n
-export PATH=$N_PREFIX/bin:$PATH
+# export N_PREFIX=$HOME/.n
+# export PATH=$N_PREFIX/bin:$PATH
 
-#PYENV
-# export PYENV_ROOT=$HOME/.pyenv
-# export PATH=$PYENV_ROOT/bin:$PATH
-# if command -v pyenv 1>/dev/null 2>&1; then
-#   eval "$(pyenv init -)"
-# fi
+# PYENV
+export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/bin:$PATH
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
 eval "$(pyenv init -)"
 
-# >>> conda initialize >>>
-CONDA_AUTO_ACTIVATE_BASE="false"
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 
 # Used for readelf and objdump
 export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Inorder to use Zplug
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+
+# Add this to your .bashrc, .zshrc or equivalent.
+# Run 'fff' with 'f' or whatever you decide to name the function.
+f() {
+    fff "$@"
+    cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")"
+}
+
+# asdf script 
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+
