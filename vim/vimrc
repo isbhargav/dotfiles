@@ -21,6 +21,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 " better traget with f & t 
 " Plug 'unblevable/quick-scope'
 Plug 'tpope/vim-dispatch'
+" Plug 'tpope/vim-vinegar'
 
 " Easy motion
 Plug 'haya14busa/incsearch.vim'
@@ -28,7 +29,6 @@ Plug 'easymotion/vim-easymotion'
 
 " Multi Cursor support in vim
 Plug 'terryma/vim-multiple-cursors'
-
 
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
@@ -84,6 +84,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'jacoborus/tender.vim'
 Plug 'isbhargav/gruber-darker-vim'
 Plug 'isbhargav/skittles_berry'
+Plug 'tpope/vim-vividchalk'
 
 
 Plug 'vim-scripts/DrawIt'
@@ -428,9 +429,8 @@ function! s:on_lsp_buffer_enabled() abort
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
 
     " Mappings
-    nmap <buffer> K <plug>(lsp-hover)
+    nmap <buffer> K  <plug>(lsp-hover)
     nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gD vert
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gr <plug>(lsp-references)
@@ -532,3 +532,10 @@ function! <SID>SynStack()
     echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 
+if has("gui_running")
+  if has("gui_macvim")
+    " MacVim
+    set guifont=Hack\ Nerd\ Font:h12
+    " set guifont=SauceCodePro-Medium:h12
+  endif
+endif

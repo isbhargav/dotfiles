@@ -7,6 +7,8 @@ Plug 'godlygeek/tabular'
 
 " upper/lower/mixed/camel/title cra
 Plug 'tpope/vim-abolish'
+Plug 'glts/vim-magnum'
+Plug 'glts/vim-radical'
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
@@ -16,6 +18,9 @@ Plug 'unblevable/quick-scope'
 
 " Better moving accoss the file
 Plug 'easymotion/vim-easymotion'
+
+" Multi Cursor support in vim
+Plug 'terryma/vim-multiple-cursors'
 
 " Sensible vim plugins by tpope
 Plug 'tpope/vim-sensible' 
@@ -93,6 +98,9 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'mfussenegger/nvim-dap'
 
 " neovim lsp plugins
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -232,6 +240,8 @@ nmap <leader>9 9gt
 " Ctrl-j/k works as Ctrl-d/u
 nnoremap <C-j> <C-d>
 nnoremap <C-k> <C-u>
+" nnoremap <C-j> <C-n>
+" nnoremap <C-k> <C-p>
 
 noremap j gj
 noremap k gk
@@ -277,7 +287,8 @@ noremap <Leader>P "+p
 
 " Telescope bindings
 " Find files using Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? '<cmd>Telescope find_files' : '<cmd>Telescope git_files')."\<cr>"
+" nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>rg <cmd>Telescope live_grep<cr>
 nnoremap <leader>bb <cmd>Telescope buffers<cr>
 nnoremap <leader>t <cmd>Telescope help_tags<cr>
@@ -299,6 +310,53 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
+" Vsnip
+" NOTE: You can use other key to expand snippet.
+
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+" See https://github.com/hrsh7th/vim-vsnip/pull/50
+
+" nmap        s   <Plug>(vsnip-select-text)
+" xmap        s   <Plug>(vsnip-select-text)
+" nmap        S   <Plug>(vsnip-cut-text)
+" xmap        S   <Plug>(vsnip-cut-text)
+
+" If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
+let g:vsnip_filetypes = {}
+let g:vsnip_filetypes.javascriptreact = ['javascript']
+let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+
+
+"-------------------------------- Telsscope Config ------------------------
+:lua << EOF
+local actions = require("telescope.actions")
+
+
+require("telescope").setup({
+    defaults = {
+        mappings = {
+            i = {
+                ["<esc><esc>"] = actions.close,
+            },
+        },
+    },
+})
+EOF
 " -------------------- LSP ---------------------------------
 :lua << EOF
 require "nvim-treesitter.configs".setup {
@@ -333,13 +391,15 @@ EOF
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
         -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
         -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
         -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
       end,
     },
     mapping = {
+      ["<Tab>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "s" }),
+      ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
       ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
       ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
       ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -479,7 +539,7 @@ inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " " Set completeopt to have a better completion experience
-" set completeopt= menuone,noinsert,noselect
+" set completeopt=menuone,noinsert,noselect
 
 " " Avoid showing message extra message when using completion
 set shortmess+=c
@@ -502,4 +562,4 @@ let g:completion_enable_auto_signature = 1
  nnoremap <silent> [d        :lua vim.lsp.diagnostic.goto_prev()<CR>
  nnoremap <silent> ]d        :lua vim.lsp.diagnostic.goto_next()<CR>
  nnoremap <silent> <space>q  :lua vim.lsp.diagnostic.set_loclist()<CR>
-
+ nnoremap <silent> gs        :G<cr>
