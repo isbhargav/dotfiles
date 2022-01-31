@@ -116,6 +116,9 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " Go Lang Plugin
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries'  }
 
+" Source trail
+Plug 'CoatiSoftware/vim-sourcetrail'
+
 " Initialize plugin system
 call plug#end()
 

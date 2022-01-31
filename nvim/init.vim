@@ -101,6 +101,8 @@ Plug 'mfussenegger/nvim-dap'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 
+Plug 'ray-x/lsp_signature.nvim'
+
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -287,8 +289,8 @@ noremap <Leader>P "+p
 
 " Telescope bindings
 " Find files using Telescope command-line sugar.
-nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? '<cmd>Telescope find_files' : '<cmd>Telescope git_files')."\<cr>"
 " nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? '<cmd>Telescope find_files' : '<cmd>Telescope git_files')."\<cr>"
 nnoremap <leader>rg <cmd>Telescope live_grep<cr>
 nnoremap <leader>bb <cmd>Telescope buffers<cr>
 nnoremap <leader>t <cmd>Telescope help_tags<cr>
@@ -352,13 +354,15 @@ require("telescope").setup({
         mappings = {
             i = {
                 ["<esc><esc>"] = actions.close,
+                ["<C-j>"] = actions.move_selection_next,
+                ["<C-k>"] = actions.move_selection_previous,
             },
         },
     },
 })
 EOF
-" -------------------- LSP ---------------------------------
-:lua << EOF
+" -------------------- tree-sitter config :h nvim ---------------------------------
+lua << EOF
 require "nvim-treesitter.configs".setup {
   playground = {
     enable = true,
@@ -382,7 +386,7 @@ require "nvim-treesitter.configs".setup {
 
 EOF
 
-" ------------------------ nvim-cmp ---------------------------------------
+" ------------------------ configuration for nvim-cmp ---------------------------------------
 :lua <<EOF
   -- Setup nvim-cmp.
   local cmp = require'cmp'
@@ -437,7 +441,9 @@ EOF
     })
   })
 
-
+  --  attach lsp-signature
+  local on_attach = function(client, bufnr)
+  end
 
   -- Setup lspconfig.
   local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -447,15 +453,21 @@ EOF
   local servers = { "pyright", "clangd", "tsserver"}
   for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup{
-      capabilities = capabilities,
-      on_attach = on_attch
+      capabilities = capabilities
     }
   end
+
+  require "lsp_signature".setup({
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    handler_opts = {
+      border = "rounded"
+    }
+  })
 
 EOF
 
 
-" -------------------------------------------- Configurations for Rust tools
+" ----------------------- Configurations for Rust tools ---------------------
 :lua << EOF
 local opts = {
     tools = { -- rust-tools options
@@ -534,17 +546,17 @@ EOF
 
 " " Completion
 
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " " Set completeopt to have a better completion experience
 " set completeopt=menuone,noinsert,noselect
 
 " " Avoid showing message extra message when using completion
-set shortmess+=c
-let g:completion_enable_auto_hover = 1
-let g:completion_enable_auto_signature = 1
+" set shortmess+=c
+" let g:completion_enable_auto_hover = 1
+" let g:completion_enable_auto_signature = 1
 "-------------------- LSP ---------------------------------
 
  nnoremap <silent> gd        :lua vim.lsp.buf.definition()<CR>
