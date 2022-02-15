@@ -1,5 +1,5 @@
-call plug#begin('~/.vim/plugged')
-" Make sure you use single quotes
+ call plug#begin('~/.vim/plugged')
+" 4 Make sure you use single quotes
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
@@ -17,6 +17,10 @@ Plug 'xolox/vim-misc'
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
+" Easy text exchange operator for Vim (cx{motion} then cx)
+Plug 'tommcdo/vim-exchange'
+"move the item under the cursor left or right
+Plug 'AndrewRadev/sideways.vim'
 
 " better traget with f & t 
 " Plug 'unblevable/quick-scope'
@@ -61,6 +65,8 @@ Plug 'machakann/vim-highlightedyank'
 " clear last search hightlight
 Plug 'isbhargav/vim-clear-highlight'
 
+"css color hex code
+Plug 'ap/vim-css-color'
 " Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
 
@@ -99,6 +105,9 @@ Plug 'tpope/vim-repeat'
 
 " scafold with templates
 Plug 'pgilad/vim-skeletons'
+
+"  A collection of language packs for Vim.
+Plug 'sheerun/vim-polyglot'
 
 " vim lsp plugins
 Plug 'prabirshrestha/vim-lsp'
@@ -147,6 +156,9 @@ set noshowmode                        " status bar displays mode so no need for 
 set noeb vb t_vb=                     " Turn of flashing and bell sound
 set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵
 
+" ----------------------  map leader key ( space )
+let mapleader = ' '
+"  -------------------------
 " set diffopt+=vertical
 
 " " Let's save undo info!
@@ -212,15 +224,16 @@ map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 "" ColorScheme
-" set termguicolors     " enable true colors support(24bit colors)
-" let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors " enable true colors support(24bit colors)
+endif
 " colorscheme tender
 colorscheme tender
 " colorscheme base16-default-dark
 
-" map leader key ( space )
-let mapleader = ' '
 
 " override the netrw :Explore, :Sexplore, :Vexplore commands
 " let g:loaded_netrwPlugin = 1
@@ -324,10 +337,6 @@ nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
 
-
-
-
-
 " Switch between buffers and tabs 
 nmap <leader><tab> <C-^>
 nmap <leader>1 1gt
@@ -386,7 +395,7 @@ noremap <Leader>P "+p
 " Fzf bindings
 " Execute Gfiles or Files based on how its setup
 nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? ':Files' : ':GFiles')."\<cr>"
-nnoremap <leader>pf       :Files .<CR>
+nnoremap <leader>fd       :Files<CR>
 " nnoremap <leader>pf       :GFiles<CR>
 nnoremap <leader>fl       :Lines<CR>
 nnoremap <leader>bl       :BLines<CR>

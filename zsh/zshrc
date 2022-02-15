@@ -160,7 +160,7 @@ bindkey "\e[1;3C" forward-word # ⌥→
 #
 # Example aliases
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias  l='exa --icons --sort Name'
+alias ls='exa --icons --sort Name'
 alias ll='exa --icons --sort Name --long'
 alias la='exa --icons --sort Name --long --all'
 alias lt='exa --icons --sort Name --long --tree'
@@ -196,10 +196,14 @@ eval "$(pyenv init -)"
 
 
 
-# Used for readelf and objdump
+# for readelf and objdump
 export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
+# Java JDK
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+# Newer Git version
 export PATH="/opt/homebrew/opt/git/bin:$PATH"
+# GNU Coreutils
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
 # Inorder to use Zplug
 export ZPLUG_HOME=/opt/homebrew/opt/zplug

@@ -42,6 +42,7 @@ Plug 'wellle/targets.vim'
 
 " Swap arguments
 Plug 'AndrewRadev/sideways.vim'
+Plug 'tommcdo/vim-exchange'
 
 " Indentation as text-object for languages like python
 Plug 'michaeljsmith/vim-indent-object'
@@ -51,6 +52,9 @@ Plug 'machakann/vim-highlightedyank'
 
 " clear last search hightlight
 Plug 'isbhargav/vim-clear-highlight'
+
+" color css hex code
+Plug 'ap/vim-css-color'
 
 " Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
@@ -73,6 +77,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 
 " Status line
@@ -205,7 +210,7 @@ endif
 " nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
 
 "" ColorScheme
-" set termguicolors     " enable true colors support
+set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
 colorscheme tokyonight
@@ -215,6 +220,8 @@ colorscheme tokyonight
 " map leader key
 let mapleader = ' '
 
+ " ----------------------- Git status keymap
+ nnoremap <silent> <leader>gs    :G<cr>
 
 " Zoom a split window in a tab/ close it
 nnoremap <leader>,zo :tabnew %<cr>
@@ -294,286 +301,40 @@ noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
 " Telescope bindings
-" Find files using Telescope command-line sugar.
 " nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <expr> <leader>ff (len(system('git rev-parse')) ? '<cmd>Telescope find_files' : '<cmd>Telescope git_files')."\<cr>"
-nnoremap <leader>f. <cmd>Telescope find_files<cr>
+nnoremap <leader>fd <cmd>Telescope find_files<cr>
+nnoremap <leader>fl <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>rg <cmd>Telescope live_grep<cr>
 nnoremap <leader>bb <cmd>Telescope buffers<cr>
 nnoremap <leader>t <cmd>Telescope help_tags<cr>
 nnoremap <leader>C <cmd>Telescope colorscheme<cr>
 
-" Customize fzf colors to match your color scheme
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
 
-"-------------------------------- Telsscope Config ------------------------
-:lua << EOF
-local actions = require("telescope.actions")
-
-
-require("telescope").setup({
-    defaults = {
-        mappings = {
-            i = {
-                ["<esc><esc>"] = actions.close,
-                ["<C-j>"] = actions.move_selection_next,
-                ["<C-k>"] = actions.move_selection_previous,
-            },
-            n = {
-                ["<esc><esc>"] = actions.close,
-                ["<C-j>"] = actions.move_selection_next,
-                ["<C-k>"] = actions.move_selection_previous,
-            },
-        },
-    },
-})
-EOF
-" -------------------- tree-sitter config :h nvim ---------------------------------
-lua << EOF
-require "nvim-treesitter.configs".setup {
-  playground = {
-    enable = true,
-    disable = {},
-    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-    persist_queries = false, -- Whether the query persists across vim sessions
-    keybindings = {
-      toggle_query_editor = 'o',
-      toggle_hl_groups = 'i',
-      toggle_injected_languages = 't',
-      toggle_anonymous_nodes = 'a',
-      toggle_language_display = 'I',
-      focus_language = 'f',
-      unfocus_language = 'F',
-      update = 'R',
-      goto_node = '<cr>',
-      show_help = '?',
-    },
-  }
-}
-
-EOF
-
-" ------------------------ configuration for nvim-cmp ---------------------------------------
-:lua <<EOF
-  -- Setup nvim-cmp.
-  local cmp = require'cmp'
-
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      end,
-    },
-    mapping = {
-      -- ["<Tab>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "s" }),
-      -- ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
-      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-      ['<C-y>'] = cmp.config.enable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-      ['<C-e>'] = cmp.mapping({
-        i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
-      }),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-      ["<Tab>"] = cmp.mapping(function(fallback)
-        if require('luasnip').expand_or_jumpable() then
-          require('luasnip').expand_or_jump()
-        elseif has_words_before() then
-          cmp.complete()
-        else
-          fallback()
-        end
-      end, { "i", "s" }),
-
-      ["<S-Tab>"] = cmp.mapping(function(fallback)
-        if require('luasnip').jumpable(-1) then
-          require('luasnip').jump(-1)
-        else
-          fallback()
-        end
-      end, { "i", "s" }),
-  },
-    formatting = {
-      format = require('lspkind').cmp_format(),
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },  -- vim-lsp
-      { name = 'nvim_lua' }, -- nvim lua
-      { name = 'luasnip' }, -- For luasnip users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline('/', {
-    sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
-
-  --  function to be called when lsp attches to buffer 
-  function on_attach(client, bufnr)
-  
-  end
-
-  -- Setup lspconfig.
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  -- Setup lspconfig.
-  local nvim_lsp = require('lspconfig')
-  local servers = { "pyright", "clangd", "tsserver"}
-  for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup{
-      capabilities = capabilities,
-      on_attach = on_attach
-    }
-  end
-
-  require "lsp_signature".setup({
-    bind = true, -- This is mandatory, otherwise border config won't get registered.
-    handler_opts = {
-      border = "rounded"
-    }
-  })
-
-EOF
-
-" ---------------- lspkind config ------------------------------
-
-" ----------------------- Configurations for Rust tools ---------------------
-:lua << EOF
-local opts = {
-    tools = { -- rust-tools options
-        -- automatically set inlay hints (type hints)
-        -- There is an issue due to which the hints are not applied on the first
-        -- opened file. For now, write to the file to trigger a reapplication of
-        -- the hints or just run :RustSetInlayHints.
-        -- default: true
-        autoSetHints = true,
-
-        -- whether to show hover actions inside the hover window
-        -- this overrides the default hover handler
-        -- default: true
-        hover_with_actions = true,
-
-        runnables = {
-            -- whether to use telescope for selection menu or not
-            -- default: true
-            use_telescope = false
-
-            -- rest of the opts are forwarded to telescope
-        },
-
-        inlay_hints = {
-            -- wheter to show parameter hints with the inlay hints or not
-            -- default: true
-            show_parameter_hints = true,
-
-            -- prefix for parameter hints
-            -- default: "<-"
-            parameter_hints_prefix = "<-",
-
-            -- prefix for all the other hints (type, chaining)
-            -- default: "=>"
-            other_hints_prefix  = "» ",
-
-            -- whether to align to the lenght of the longest line in the file
-            max_len_align = false,
-
-            -- padding from the left if max_len_align is true
-            max_len_align_padding = 1,
-
-            -- whether to align to the extreme right or not
-            right_align = false,
-
-            -- padding from the right if right_align is true
-            right_align_padding = 7,
-        },
-
-        hover_actions = {
-            -- the border that is used for the hover window
-            -- see vim.api.nvim_open_win()
-            border = {
-              {"╭", "FloatBorder"},
-              {"─", "FloatBorder"},
-              {"╮", "FloatBorder"},
-              {"│", "FloatBorder"},
-              {"╯", "FloatBorder"},
-              {"─", "FloatBorder"},
-              {"╰", "FloatBorder"},
-              {"│", "FloatBorder"}
-            },
-        }
-    },
-
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
-    -- server = {}, -- rust-analyer options
-}
-
-require('rust-tools').setup(opts)
-
-EOF
-
-" ------------------------------ nvim-dap config
-lua << EOF
-
-local dap = require('dap')
-dap.adapters.lldb = {
-  type = 'executable',
-  command = '/usr/bin/lldb-vscode', -- adjust as needed
-  name = "lldb"
-}
-
-EOF
-" " Completion
-
-" let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" " Set completeopt to have a better completion experience
-" set completeopt=menuone,noinsert,noselect
-
-" " Avoid showing message extra message when using completion
-" set shortmess+=c
-" let g:completion_enable_auto_hover = 1
-" let g:completion_enable_auto_signature = 1
-"-------------------- LSP ---------------------------------
-
+"           _                   ____             __ _       
+"          | |   _   _  __ _   / ___|___  _ __  / _(_) __ _ 
+"          | |  | | | |/ _` | | |   / _ \| '_ \| |_| |/ _` |
+"          | |__| |_| | (_| | | |__| (_) | | | |  _| | (_| |
+"          |_____\__,_|\__,_|  \____\___/|_| |_|_| |_|\__, |
+"                                                     |___/ 
+"          
+           
+"-------------------------------- Telsscope Config ---------------------------------------------------------------------
+lua require('telescope-setup')
+" -------------------- tree-sitter config :h nvim ---------------------------------------------------------------------
+lua require('treesitter-setup')
+" ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
+lua require('completion-setup')
+" ----------------------- Configurations for Rust tools ------------------------------------------------------------------
+" lua require('rustools-setup')
+"-------------------- LSP keymaps ---------------------------------------------------------------------------------------
  nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
  nnoremap <silent> gd            :lua vim.lsp.buf.definition()<CR>
  nnoremap <silent> gr            :lua vim.lsp.buf.references()<CR>
  nnoremap <silent> <leader>D     :lua vim.lsp.buf.type_definition()<CR>
  nnoremap <silent> gD            :lua vim.lsp.buf.declaration()<CR>
  nnoremap <silent> gi            :lua vim.lsp.buf.implementation()<CR>
- nnoremap <silent> <leader>gs    :lua vim.lsp.buf.signature_help()<CR>
+ nnoremap <silent> gs            :lua vim.lsp.buf.signature_help()<CR>
  nnoremap <silent> <leader>wa    :lua vim.lsp.buf.add_workspace_folder()<CR>
  nnoremap <silent> <leader>wr    :lua vim.lsp.buf.remove_workspace_folder()<CR>
  nnoremap <silent> <leader>wl    :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
@@ -584,6 +345,4 @@ EOF
  nnoremap <silent> <leader>dl    :lua vim.lsp.diagnostic.set_loclist()<CR>
  nnoremap <silent> <leader>ca    :lua vim.lsp.buf.code_action()<CR>
 
- " Get status
- nnoremap <silent> gs        :G<cr>
  
