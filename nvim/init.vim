@@ -32,7 +32,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 
 "Shows a git diff in the sign column (<leader>hp - preview change)
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
+Plug 'lewis6991/gitsigns.nvim'
 
 " Navigate buffers,quicklist,arglist,locationlist with [,] keys
 Plug 'tpope/vim-unimpaired' 
@@ -339,6 +340,8 @@ nnoremap <leader>C <cmd>Telescope colorscheme<cr>
            
 " -------------------------------- comment.nvim setup
 lua require('comment-setup')
+" -------------------------------- comment.nvim setup
+lua require('gitsigns-setup')
 "-------------------------------- Telsscope Config ---------------------------------------------------------------------
 lua require('telescope-setup')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------

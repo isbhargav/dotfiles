@@ -160,7 +160,7 @@ bindkey "\e[1;3C" forward-word # ⌥→
 #
 # Example aliases
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias ls='exa --icons --sort Name'
+alias l='exa --icons --sort Name'
 alias ll='exa --icons --sort Name --long'
 alias la='exa --icons --sort Name --long --all'
 alias lt='exa --icons --sort Name --long --tree'
@@ -204,6 +204,16 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 export PATH="/opt/homebrew/opt/git/bin:$PATH"
 # GNU Coreutils
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+# zlib
+export PATH="/opt/homebrew/opt/zlib/bin:$PATH"
+
+# For compilers to find zlib you may need to set:
+export LDFLAGS="-L/opt/homebrew/opt/zlib/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/zlib/include"
+
+# For pkg-config to find zlib you may need to set:
+export PKG_CONFIG_PATH="/opt/homebrew/opt/zlib/lib/pkgconfig"
+
 
 # Inorder to use Zplug
 export ZPLUG_HOME=/opt/homebrew/opt/zplug

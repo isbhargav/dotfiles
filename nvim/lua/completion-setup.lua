@@ -1,16 +1,25 @@
+-- ref: https://github.com/nicknisi/dotfiles/blob/main/config/nvim/lua/plugins/lspconfig.lua
+-- ref: https://github.com/nicknisi/dotfiles/blob/main/config/nvim/lua/plugins/completion.lua
+
 -- Setup nvim-cmp.
 local cmp = require'cmp'
+local lspkind = require("lspkind")
+local luasnip = require('luasnip')
+
+vim.o.completeopt = "menu,menuone,noselect"
 
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      luasnip.lsp_expand(args.body) -- For `luasnip` users.
     end,
   },
   mapping = {
     -- ["<Tab>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "s" }),
     -- ["<S-Tab>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
+    ["<C-j>"] = cmp.mapping.select_next_item({behavior = cmp.SelectBehavior.Insert}),
+    ["<C-k>"] = cmp.mapping.select_prev_item({behavior = cmp.SelectBehavior.Insert}),
     ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -41,6 +50,10 @@ cmp.setup({
   formatting = {
     format = require('lspkind').cmp_format(), -- LSPKIND
   },
+  experimental = {
+      native_menu = false,
+      ghost_text = true
+    },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },  -- vim-lsp
     { name = 'nvim_lua' }, -- nvim lua
@@ -67,9 +80,9 @@ cmp.setup.cmdline(':', {
 })
 
 --  function to be called when lsp attches to buffer 
-function on_attach(client, bufnr)
+-- function on_attach(client, bufnr)
   -- do on attach here
-end
+-- end
 
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -80,7 +93,7 @@ local servers = { "pyright", "clangd", "tsserver", "sumneko_lua"}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup{
     capabilities = capabilities,
-    on_attach = on_attach
+    -- on_attach = on_attach
   }
 end
 
@@ -95,7 +108,7 @@ end
 -- +---------------------------------------------------------------+
 
 
-require "lsp_signature".setup({
+require('lsp_signature').setup({
   bind = true, -- This is mandatory, otherwise border config won't get registered.
   handler_opts = {
     border = "rounded"

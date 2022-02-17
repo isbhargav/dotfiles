@@ -1,3 +1,4 @@
+-- ref: https://github.com/nicknisi/dotfiles/blob/main/config/nvim/lua/plugins/treesitter.lua
 require "nvim-treesitter.configs".setup {
   playground = {
     -- One of "all", "maintained" (parsers with maintainers), or a list of languages
