@@ -31,6 +31,9 @@ Plug 'tpope/vim-surround'
 " Vim's defacto git integration
 Plug 'tpope/vim-fugitive'
 
+"Shows a git diff in the sign column (<leader>hp - preview change)
+Plug 'airblade/vim-gitgutter'
+
 " Navigate buffers,quicklist,arglist,locationlist with [,] keys
 Plug 'tpope/vim-unimpaired' 
 
@@ -54,7 +57,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'isbhargav/vim-clear-highlight'
 
 " color css hex code
-Plug 'ap/vim-css-color'
+Plug 'norcalli/nvim-colorizer.lua'
 
 " Folder drawer based on vim principals
 Plug 'justinmk/vim-dirvish'
@@ -83,6 +86,9 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Status line
 Plug 'itchyny/lightline.vim'
 
+" Undo tree <leader>ut
+Plug 'simnalamburt/vim-mundo'
+
 " ColorScheme
 Plug 'gruvbox-community/gruvbox'
 Plug 'chriskempson/base16-vim'
@@ -90,11 +96,15 @@ Plug 'ciaranm/inkpot'
 Plug 'folke/tokyonight.nvim', { 'branch': 'main'  }
 
 
-Plug 'nvim-treesitter/nvim-treesitter'
+" TreeSitter plugin
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 
 " Comment Plugin
-Plug 'tpope/vim-commentary'
+" Plug 'tpope/vim-commentary'
+Plug 'numToStr/Comment.nvim'
+" comment for embedded languages in certain types of files.
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 
 " icons
 Plug 'kyazdani42/nvim-web-devicons'
@@ -149,21 +159,26 @@ set path+=**                          " Search all the subdirectories recursivel
 set path+=~/.config/nvim/init.vim     " Add init.vim to path
 set dictionary+=/usr/share/dict/words " dictionary completion
 set noshowmode                        " status bar displays mode so no need for vim
-set cursorline                        " hilight currentline
-
+" set cursorline                        " hilight currentline
+packadd cfilter
 
 " Let's save undo info!
 " m h  dom mon dow   command
-" 43 00 *   *   3     find ~/.vim/undo-dir -type f -mtime +90 -delete
+" 43 00 *   *   3     find ~/.vim/undo-nvim -type f -mtime +90 -delete
 if !isdirectory($HOME."/.vim")
     call mkdir($HOME."/.vim", "", 0770)
 endif
-if !isdirectory($HOME."/.vim/undo-dir")
-    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+if !isdirectory($HOME."/.vim/undo-nvim")
+    call mkdir($HOME."/.vim/undo-nvim", "", 0700)
 endif
 
-let g:yankring_history_file = '.vim/yankring_history/yankring_history'
-set undodir=~/.vim/undo-dir
+" delete undo dir on every 15 of month
+" Delete files inside undo dir after 90 days (Cleanup)
+if system("date +%d") == 15
+    call system("find ".$HOME."/.vim/undo-nvim"." -type f -mtime +90 -delete")
+endif
+
+set undodir=~/.vim/undo-nvim
 set undofile
 
 " Correct typos
@@ -273,6 +288,9 @@ nnoremap Q @q
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
 
+" Mundo keymap
+nnoremap <leader>ut :MundoToggle<cr>
+
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
 nmap <leader>a <Plug>(LiveEasyAlign)
@@ -319,15 +337,20 @@ nnoremap <leader>C <cmd>Telescope colorscheme<cr>
 "                                                     |___/ 
 "          
            
+" -------------------------------- comment.nvim setup
+lua require('comment-setup')
 "-------------------------------- Telsscope Config ---------------------------------------------------------------------
 lua require('telescope-setup')
-" -------------------- tree-sitter config :h nvim ---------------------------------------------------------------------
-lua require('treesitter-setup')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
 lua require('completion-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
 " lua require('rustools-setup')
+" ------------------------- Colorizer setup     ---------------
+lua require('colorizer-setup')
+" -------------------- tree-sitter config :h nvim ---------------------------------------------------------------------
+lua require('treesitter-setup')
 "-------------------- LSP keymaps ---------------------------------------------------------------------------------------
+
  nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
  nnoremap <silent> gd            :lua vim.lsp.buf.definition()<CR>
  nnoremap <silent> gr            :lua vim.lsp.buf.references()<CR>
@@ -342,7 +365,7 @@ lua require('completion-setup')
  nnoremap <silent> <leader>e     :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
  nnoremap <silent> [d            :lua vim.lsp.diagnostic.goto_prev()<CR>
  nnoremap <silent> ]d            :lua vim.lsp.diagnostic.goto_next()<CR>
- nnoremap <silent> <leader>dl    :lua vim.lsp.diagnostic.set_loclist()<CR>
+ nnoremap <silent> <leader>dl    :lua vim.diagnostic.setloclist()<CR>
  nnoremap <silent> <leader>ca    :lua vim.lsp.buf.code_action()<CR>
+ nnoremap <silent> <leader>cd    :vim.diagnostic.open_float()<CR>
 
- 
