@@ -1,5 +1,6 @@
  call plug#begin('~/.vim/plugged')
 " 4 Make sure you use single quotes
+Plug 'tpope/vim-rsi'
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
@@ -14,6 +15,8 @@ Plug 'glts/vim-radical'
 Plug 'xolox/vim-notes'
 Plug 'xolox/vim-misc'
 
+"Shows a git diff in the sign column
+Plug 'airblade/vim-gitgutter'
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
@@ -25,7 +28,6 @@ Plug 'AndrewRadev/sideways.vim'
 " better traget with f & t 
 " Plug 'unblevable/quick-scope'
 Plug 'tpope/vim-dispatch'
-" Plug 'tpope/vim-vinegar'
 
 " Easy motion
 Plug 'haya14busa/incsearch.vim'
@@ -68,7 +70,8 @@ Plug 'isbhargav/vim-clear-highlight'
 "css color hex code
 Plug 'ap/vim-css-color'
 " Folder drawer based on vim principals
-Plug 'justinmk/vim-dirvish'
+" Plug 'justinmk/vim-dirvish'
+Plug 'tpope/vim-vinegar'
 
 " Sennsibly set project root
 Plug 'airblade/vim-rooter'
@@ -96,6 +99,8 @@ Plug 'tpope/vim-vividchalk'
 Plug 'vim-scripts/DrawIt'
 Plug 'dhruvasagar/vim-table-mode'
 
+" Undo tree viewer
+Plug 'simnalamburt/vim-mundo'
 
 " Comment Plugin
 Plug 'tpope/vim-commentary'
@@ -155,25 +160,33 @@ set dictionary+=/usr/share/dict/words " dictionary completion
 set noshowmode                        " status bar displays mode so no need for vim
 set noeb vb t_vb=                     " Turn of flashing and bell sound
 set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵
+" set diffopt+=vertical
+" vim's built in plugin
+runtime ftplugin/man.vim
+packadd cfilter
 
 " ----------------------  map leader key ( space )
 let mapleader = ' '
 "  -------------------------
-" set diffopt+=vertical
 
-" " Let's save undo info!
-" " m h  dom mon dow   command
-" " 43 00 *   *   3     find ~/.vim/undo-dir -type f -mtime +90 -delete
-" if !isdirectory($HOME."/.vim")
-"     call mkdir($HOME."/.vim", "", 0770)
-" endif
-" if !isdirectory($HOME."/.vim/undo-dir")
-"     call mkdir($HOME."/.vim/undo-dir", "", 0700)
-" endif
+" Let's save undo info!
+" m h  dom mon dow   command
+" 43 00 *   *   3     find ~/.vim/undo-dir -type f -mtime +90 -delete
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
 
-" let g:yankring_history_file = '.vim/yankring_history/yankring_history'
-" set undodir=~/.vim/undo-dir
-" set undofile
+" delete undo dir on every 15 of month
+" Delete files inside undo dir after 90 days (Cleanup)
+if system("date +%d") == 15
+    call system("find ".$HOME."/.vim/undo-dir"." -type f -mtime +90 -delete")
+endif
+
+set undofile
+set undodir=~/.vim/undo-dir
 
 " Correct typos
 aug FixTypos
@@ -244,30 +257,30 @@ colorscheme tender
 
 
 " NERDtree like setup for Netrw
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
-let g:netrw_winsize = 25
-let skeletons#autoRegister = 1
-function! ToggleVExplorer()
-  if exists("t:expl_buf_num")
-      let expl_win_num = bufwinnr(t:expl_buf_num)
-      if expl_win_num != -1
-          let cur_win_nr = winnr()
-          exec expl_win_num . 'wincmd w'
-          close
-          exec cur_win_nr . 'wincmd w'
-          unlet t:expl_buf_num
-      else
-          unlet t:expl_buf_num
-      endif
-  else
-      exec '1wincmd w'
-      Vexplore
-      let t:expl_buf_num = bufnr("%")
-  endif
-endfunction
+" let g:netrw_banner = 0
+" let g:netrw_liststyle = 3
+" let g:netrw_browse_split = 4
+" let g:netrw_altv = 1
+" let g:netrw_winsize = 25
+" let skeletons#autoRegister = 1
+" function! ToggleVExplorer()
+"   if exists("t:expl_buf_num")
+"       let expl_win_num = bufwinnr(t:expl_buf_num)
+"       if expl_win_num != -1
+"           let cur_win_nr = winnr()
+"           exec expl_win_num . 'wincmd w'
+"           close
+"           exec cur_win_nr . 'wincmd w'
+"           unlet t:expl_buf_num
+"       else
+"           unlet t:expl_buf_num
+"       endif
+"   else
+"       exec '1wincmd w'
+"       Vexplore
+"       let t:expl_buf_num = bufnr("%")
+"   endif
+" endfunction
 
 
 " Vim dirvish Drawer
@@ -376,13 +389,15 @@ nnoremap gp `[v`]
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
-nmap <leader>e <Plug>(EasyAlign)
-vmap <leader>e <Plug>(EasyAlign)
+nmap <leader>a <Plug>(LiveEasyAlign)
+vmap <leader>a <Plug>(LiveEasyAlign)
 
 " quick-scope
 " nmap <leader>q <Plug>(QuickScopeToggle)
 " vmap <leader>q <Plug>(QuickScopeToggle)
 
+" Mundo Toogle keymap
+nnoremap <leader>ut :MundoToggle<cr>
 
 
 " Copy to clipbord
@@ -414,8 +429,6 @@ nnoremap <leader>gs  :G<CR>
 " Merge Conflit
 " d2o - d3o
 
-
-
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -440,12 +453,13 @@ function! s:on_lsp_buffer_enabled() abort
     setlocal signcolumn=yes
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
 
-    " Mappings
+    "---------------LSP key  Mappings ---- 
     nmap <buffer> K  <plug>(lsp-hover)
     nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> <C-]> <plug>(lsp-definition)
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gi <plug>(lsp-implementation)
     nmap <buffer> gt <plug>(lsp-type-definition)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
