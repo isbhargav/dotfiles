@@ -344,14 +344,14 @@ lua require('comment-setup')
 lua require('gitsigns-setup')
 "-------------------------------- Telsscope Config ---------------------------------------------------------------------
 lua require('telescope-setup')
-" ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
-lua require('completion-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
 " lua require('rustools-setup')
 " ------------------------- Colorizer setup     ---------------
 lua require('colorizer-setup')
 " -------------------- tree-sitter config :h nvim ---------------------------------------------------------------------
 lua require('treesitter-setup')
+" ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
+lua require('completion-setup')
 "-------------------- LSP keymaps ---------------------------------------------------------------------------------------
 
  nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
