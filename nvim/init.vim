@@ -95,6 +95,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'chriskempson/base16-vim'
 Plug 'ciaranm/inkpot'
 Plug 'folke/tokyonight.nvim', { 'branch': 'main'  }
+Plug 'sainnhe/sonokai'
 
 
 " TreeSitter plugin

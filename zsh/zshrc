@@ -81,6 +81,7 @@ ZSH_THEME="robbyrussell"
 
 plugins=(
   git
+  jump
   asdf
   brew
   macos
@@ -133,6 +134,7 @@ export LANG=en_US.UTF-8
 # else
 #   export EDITOR='mvim'
 # fi
+export MANPAGER="vim -M +MANPAGER -"
 export EDITOR='nvim'
 export PAGER='less'
 # Compilation flags
@@ -163,7 +165,7 @@ bindkey "\e[1;3C" forward-word # ⌥→
 alias l='exa --icons --sort Name'
 alias ll='exa --icons --sort Name --long'
 alias la='exa --icons --sort Name --long --all'
-alias lt='exa --icons --sort Name --long --tree'
+alias lt='exa --icons --sort Name --long --tree --git-ignore'
 alias cpwd='pwd | pbcopy'
 alias zshconf="nvim ~/.zshrc"
 alias zshso="source ~/.zshrc"

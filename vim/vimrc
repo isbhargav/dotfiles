@@ -15,8 +15,6 @@ Plug 'glts/vim-radical'
 Plug 'xolox/vim-notes'
 Plug 'xolox/vim-misc'
 
-"Shows a git diff in the sign column
-Plug 'airblade/vim-gitgutter'
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
@@ -48,6 +46,10 @@ Plug 'tpope/vim-git'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-eunuch'
+Plug 'junegunn/gv.vim'
+
+"Shows a git diff in the sign column
+Plug 'airblade/vim-gitgutter'
 
 " Navigate buffers,quicklist,arglist,locationlist with [,] keys
 Plug 'tpope/vim-unimpaired' 
@@ -94,6 +96,7 @@ Plug 'jacoborus/tender.vim'
 Plug 'isbhargav/gruber-darker-vim'
 Plug 'isbhargav/skittles_berry'
 Plug 'tpope/vim-vividchalk'
+Plug 'sainnhe/sonokai'
 
 
 Plug 'vim-scripts/DrawIt'
@@ -209,7 +212,7 @@ endif
 
 " Lightline scheme
 let g:lightline = {
-      \ 'colorscheme': 'solarized',
+      \ 'colorscheme': 'sonokai',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -237,15 +240,26 @@ map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 "" ColorScheme
-set background=dark
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors " enable true colors support(24bit colors)
+ if exists('+termguicolors')
+   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+   set termguicolors " enable true colors support(24bit colors)
+ endif
+ " colorscheme tender
+ colorscheme sonokai
+" " colorscheme base16-default-dark
+
+" Important!!
+if has('termguicolors')
+  set termguicolors
 endif
-" colorscheme tender
-colorscheme tender
-" colorscheme base16-default-dark
+
+" The configuration options should be placed before `colorscheme sonokai`.
+let g:sonokai_style = 'shusia'
+let g:sonokai_enable_italic = 1
+let g:sonokai_disable_italic_comment = 1
+
+colorscheme sonokai
 
 
 " override the netrw :Explore, :Sexplore, :Vexplore commands
@@ -358,8 +372,6 @@ nmap <leader>3 3gt
 nmap <leader>4 4gt
 nmap <leader>5 5gt
 nmap <leader>6 6gt
-nmap <leader>7 7gt
-nmap <leader>8 8gt
 nmap <leader>9 9gt
 
 " Short mappings for common tasks
@@ -385,8 +397,6 @@ nmap Y y$
 " Select pasted last pasted similar to gv
 nnoremap gp `[v`]
 
-
-
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 " xmap ga <Plug>(EasyAlign)
 nmap <leader>a <Plug>(LiveEasyAlign)
@@ -398,6 +408,10 @@ vmap <leader>a <Plug>(LiveEasyAlign)
 
 " Mundo Toogle keymap
 nnoremap <leader>ut :MundoToggle<cr>
+
+" open code fold with enter if on fold
+" nnoremap <silent> <CR> @=(foldclosed('.')==-1?'za':"\<CR>")<CR>
+nnoremap <expr><cr> (foldclosed('.') == -1) ?  ":echo 'A'" : ":echo 'B'"
 
 
 " Copy to clipbord
