@@ -1,6 +1,17 @@
+printf "You are about to Restore the backup files. Please confim [y/n]"
+read answer
+if [ $answer == 'y' ]
+then
+  printf "your answer"
+fi
+
 # create dir if they don't exist 
-[ ! -d "~/.hammerspoon" ] && mkdir "~/.hammerspoon"
-[ ! -d "~/.config/nvim" ] && mkdir "~/.config/nvim"
+if [ ! -d "~/.hammerspoon" ] then
+  mkdir "~/.hammerspoon"
+fi
+if [ ! -d "~/.config/nvim" ] then
+  mkdir "~/.config/nvim"
+fi
 
 # sync the files using rsync
 rsync -r ./hammerspoon/ ~/.hammerspoon
