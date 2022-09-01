@@ -41,10 +41,6 @@ Plug 'tpope/vim-unimpaired'
 " Pair opening and closing quotes and brackets
 Plug 'jiangmiao/auto-pairs'
 
-" provide additional text objects
-" Plug 'wellle/targets.vim'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-
 " Swap arguments
 Plug 'AndrewRadev/sideways.vim'
 Plug 'tommcdo/vim-exchange'
@@ -103,6 +99,13 @@ Plug 'sainnhe/sonokai'
 " TreeSitter plugin
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
+
+" Context
+Plug 'nvim-treesitter/nvim-treesitter-context'
+
+" provide additional text objects
+" Plug 'wellle/targets.vim'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " Comment Plugin
 " Plug 'tpope/vim-commentary'
@@ -358,6 +361,8 @@ lua require('colorizer-setup')
 lua require('treesitter-setup')
 " -------------------- tree-sitter text objects ---------------------------------------------------------------------
 lua require('text-objects-treesitter')
+" -------------------- tree-sitter context ---------------------------------------------------------------------
+lua require('treesitter-context-setup')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
 lua require('completion-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
