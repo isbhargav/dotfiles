@@ -42,7 +42,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'jiangmiao/auto-pairs'
 
 " provide additional text objects
-Plug 'wellle/targets.vim'
+" Plug 'wellle/targets.vim'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " Swap arguments
 Plug 'AndrewRadev/sideways.vim'
@@ -61,7 +62,8 @@ Plug 'isbhargav/vim-clear-highlight'
 Plug 'norcalli/nvim-colorizer.lua'
 
 " Folder drawer based on vim principals
-Plug 'justinmk/vim-dirvish'
+Plug 'tpope/vim-vinegar'
+" Plug 'justinmk/vim-dirvish'
 
 " Sennsibly set project root
 Plug 'airblade/vim-rooter'
@@ -74,8 +76,8 @@ Plug 'vim-scripts/DrawIt'
 Plug 'dhruvasagar/vim-table-mode'
 
 " fuzzy search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
 
 " Telescope
 Plug 'nvim-lua/popup.nvim'
@@ -330,7 +332,7 @@ nnoremap <leader>fd <cmd>Telescope find_files<cr>
 nnoremap <leader>fl <cmd>Telescope current_buffer_fuzzy_find<cr>
 nnoremap <leader>rg <cmd>Telescope live_grep<cr>
 nnoremap <leader>bb <cmd>Telescope buffers<cr>
-nnoremap <leader>t <cmd>Telescope help_tags<cr>
+nnoremap <leader>ht <cmd>Telescope help_tags<cr>
 nnoremap <leader>C <cmd>Telescope colorscheme<cr>
 
 
@@ -354,6 +356,8 @@ lua require('telescope-setup')
 lua require('colorizer-setup')
 " -------------------- tree-sitter config :h nvim ---------------------------------------------------------------------
 lua require('treesitter-setup')
+" -------------------- tree-sitter text objects ---------------------------------------------------------------------
+lua require('text-objects-treesitter')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
 lua require('completion-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------

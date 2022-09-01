@@ -181,6 +181,7 @@ alias g++='g++ -std=c++17 -Wall -Wextra -Wshadow -Wpedantic -Wnull-dereference -
 alias ge="git rev-list --objects --all | awk '$2' | sort -k2 | uniq -cf1 | sort -rn | head"
 alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc"
 alias find-pkg='pkg-config --list-all | fzf |  cut -d " " -f1 | xargs -t pkg-config --libs --cflags'
+alias gitbo='gibo list | fzf | xargs -I _ gibo dump _ > .gitignore'
 
 #########################################################################################
 
@@ -197,6 +198,8 @@ fi
 eval "$(pyenv init -)"
 
 
+# Ruby Executables directory
+export PATH="Users/bhargavlad/.asdf/installs/ruby/3.1.1/bin:$PATH"
 
 # for readelf and objdump
 export PATH="/opt/homebrew/opt/binutils/bin:$PATH"
@@ -233,4 +236,15 @@ f() {
 
 # asdf script 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+# export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+# For compilers to find openssl@3 you may need to set:
+export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+
+# For pkg-config to find openssl@3 you may need to set:
+export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+
+# Update /Users/bhargavlad/.zshrc:
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

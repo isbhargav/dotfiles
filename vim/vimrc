@@ -108,6 +108,9 @@ Plug 'chriskempson/base16-vim'
 Plug 'vim-scripts/DrawIt'
 Plug 'dhruvasagar/vim-table-mode'
 
+" Line diff
+Plug 'AndrewRadev/linediff.vim'
+
 " Undo tree viewer
 Plug 'simnalamburt/vim-mundo'
 
@@ -244,6 +247,15 @@ let g:lightline = {
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
+
+" Simplifying regular expressions using magic and no-magic
+"Permanent 'very magic' mode
+nnoremap / /\v
+vnoremap / /\v
+cnoremap %s/ %smagic/
+cnoremap \>s/ \>smagic/
+nnoremap :g/ :g/\v
+nnoremap :g// :g//
 
 "" ColorScheme
  if exists('+termguicolors')

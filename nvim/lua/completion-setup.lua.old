@@ -103,7 +103,7 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protoco
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 -- Setup lspconfig.
 local nvim_lsp = require('lspconfig')
-local servers = { "pyright", "clangd", "tsserver", "sumneko_lua"}
+local servers = { "pyright", "clangd", "tsserver"} --, "sumneko_lua"}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup{
     capabilities = capabilities,
