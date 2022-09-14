@@ -79,6 +79,9 @@ ZSH_THEME="robbyrussell"
 # vi mode ( you dont need this if you use zsh-vi-mode plugin)
 # bindkey -v
 
+#Default keybinding to get into copy mode is prefix+[
+bind-key          [ copy-mode
+
 plugins=(
   git
   jump
