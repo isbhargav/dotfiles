@@ -126,14 +126,13 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 
 " REPL-like environment for developing lua plugins in Nvim
-Plug 'bfredl/nvim-luadev'
+Plug 'folke/lua-dev.nvim'
 
 " For luasnip users.
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 
 Plug 'ray-x/lsp_signature.nvim'
-Plug 'onsails/lspkind-nvim'
 
 " Lsp install (order here matter mason, mason-lspconfig, nvim-lspconfig)
 Plug 'williamboman/mason.nvim'
@@ -371,6 +370,8 @@ lua require('text-objects-treesitter')
 lua require('treesitter-context-setup')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
 lua require('completion-setup')
+" ------------------------ Lsp Signature + LspKind ------------------------------------------------
+lua require('lsp_signature-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
 lua require('utils')
 "-------------------- LSP dap ---------------------------------------------------------------------------------------

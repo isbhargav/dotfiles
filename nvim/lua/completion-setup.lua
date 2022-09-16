@@ -100,6 +100,9 @@ local servers = {
     "sumneko_lua"
 }
 
+-- setup for luadev
+require("lua-dev").setup()
+
 -- mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
 require("mason").setup()
 require("mason-lspconfig").setup({ ensure_installed = servers })
@@ -112,23 +115,6 @@ for _, lsp in ipairs(servers) do
       capabilities = capabilities,
    }
 end
-
-
--- +---------------------------------------------------------------+
--- |   _                 _                   _                     |
--- |  | |___ _ __    ___(_) __ _ _ __   __ _| |_ _   _ _ __ ___    |
--- |  | / __| '_ \  / __| |/ _` | '_ \ / _` | __| | | | '__/ _ \   |
--- |  | \__ \ |_) | \__ \ | (_| | | | | (_| | |_| |_| | | |  __/   |
--- |  |_|___/ .__/  |___/_|\__, |_| |_|\__,_|\__|\__,_|_|  \___|   |
--- |        |_|            |___/                                   |
--- +---------------------------------------------------------------+
-
-require('lsp_signature').setup({
-      bind = true, -- This is mandatory, otherwise border config won't get registered.
-      handler_opts = {
-         border = "rounded"
-      }
-   })
 
 
 -- Luasnip config

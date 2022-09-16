@@ -9,7 +9,6 @@ require("nvim-dap-virtual-text").setup()
 
 -- dapui open windows automenticaly
 dap.listeners.after.event_initialized["dapui_config"] = function()
-
   -- open dap ui
   dapui.open()
 end
@@ -43,6 +42,11 @@ vim.keymap.set("n", "<leader>Dt" ,":lua require'dap'.toggle_breakpoint()<cr>")
 vim.keymap.set("n", "<leader>Dx" ,":lua require'dap'.terminate()<cr>")
 vim.keymap.set("n", "<leader>Du" ,":lua require'dap'.step_out()<cr>")
 
+
+vim.keymap.set("n", "<F5>" ,":lua require'dap'.continue()<cr>")
+vim.keymap.set("n", "<F10>" ,":lua require'dap'.step_over()<cr>")
+vim.keymap.set("n", "<F11>" ,":lua require'dap'.step_into()<cr>")
+vim.keymap.set("n", "<F12>" ,":lua require'dap'.step_out()<cr>")
 
 
 -- C/C++/Rust (via codelldb)
