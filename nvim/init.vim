@@ -118,6 +118,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Debugging with VIM
 Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
 
 " neovim lsp plugins
 Plug 'hrsh7th/vim-vsnip'
@@ -374,23 +375,23 @@ lua require('utils')
 "-------------------- LSP dap ---------------------------------------------------------------------------------------
 lua require('nvim-dap-setup')
 
-nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gd            :lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gr            :lua vim.lsp.buf.references()<CR>
-nnoremap <silent> <leader>D     :lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gD            :lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> gi            :lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> gs            :lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> <leader>wa    :lua vim.lsp.buf.add_workspace_folder()<CR>
-nnoremap <silent> <leader>wr    :lua vim.lsp.buf.remove_workspace_folder()<CR>
-nnoremap <silent> <leader>wl    :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
-nnoremap <silent> <leader>rn    :lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> <leader>e     :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-nnoremap <silent> [d            :lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent> ]d            :lua vim.lsp.diagnostic.goto_next()<CR>
-nnoremap <silent> <leader>dl    :lua vim.diagnostic.setloclist()<CR>
-nnoremap <silent> <leader>ca    :lua vim.lsp.buf.code_action()<CR>
-nnoremap <silent> <leader>cd    :vim.diagnostic.open_float()<CR>
+" nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> gd            :lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> gr            :lua vim.lsp.buf.references()<CR>
+" nnoremap <silent> <leader>D     :lua vim.lsp.buf.type_definition()<CR>
+" nnoremap <silent> gD            :lua vim.lsp.buf.declaration()<CR>
+" nnoremap <silent> gi            :lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> gs            :lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> <leader>wa    :lua vim.lsp.buf.add_workspace_folder()<CR>
+" nnoremap <silent> <leader>wr    :lua vim.lsp.buf.remove_workspace_folder()<CR>
+" nnoremap <silent> <leader>wl    :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
+" nnoremap <silent> <leader>rn    :lua vim.lsp.buf.rename()<CR>
+" nnoremap <silent> <leader>e     :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+" nnoremap <silent> [d            :lua vim.lsp.diagnostic.goto_prev()<CR>
+" nnoremap <silent> ]d            :lua vim.lsp.diagnostic.goto_next()<CR>
+" nnoremap <silent> <leader>dl    :lua vim.diagnostic.setloclist()<CR>
+" nnoremap <silent> <leader>ca    :lua vim.lsp.buf.code_action()<CR>
+" nnoremap <silent> <leader>cd    :vim.diagnostic.open_float()<CR>
 
 
 " REPL live env
