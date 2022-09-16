@@ -119,6 +119,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 " Debugging with VIM
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
 
 " neovim lsp plugins
 Plug 'hrsh7th/vim-vsnip'

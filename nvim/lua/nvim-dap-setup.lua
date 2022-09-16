@@ -4,6 +4,9 @@ local dapui = require("dapui")
 -- setup dapui
 dapui.setup()
 
+-- Setup dap virtual text
+require("nvim-dap-virtual-text").setup()
+
 -- dapui open windows automenticaly
 dap.listeners.after.event_initialized["dapui_config"] = function()
 
