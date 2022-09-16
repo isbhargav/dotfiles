@@ -100,9 +100,6 @@ for _, lsp in ipairs(servers) do
       capabilities = capabilities,
    }
 end
-require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-   capabilities = capabilities
-}
 
 
 -- +---------------------------------------------------------------+
