@@ -167,3 +167,22 @@ vim.keymap.set({'i'}, '<c-l>', function()
   end
 end)
 
+vim.keymap.set("n", "K"         , ":lua vim.lsp.buf.hover()<CR>")
+vim.keymap.set("n", "gd"        , ":lua vim.lsp.buf.definition()<CR>")
+vim.keymap.set("n", "gr"        , ":lua vim.lsp.buf.references()<CR>")
+vim.keymap.set("n", "<leader>dt", ":lua vim.lsp.buf.type_definition()<CR>")
+vim.keymap.set("n", "gD"        , ":lua vim.lsp.buf.declaration()<CR>")
+vim.keymap.set("n", "gi"        , ":lua vim.lsp.buf.implementation()<CR>")
+vim.keymap.set("n", "gs"        , ":lua vim.lsp.buf.signature_help()<CR>")
+vim.keymap.set("n", "<leader>wa", ":lua vim.lsp.buf.add_workspace_folder()<CR>")
+vim.keymap.set("n", "<leader>wr", ":lua vim.lsp.buf.remove_workspace_folder()<CR>")
+vim.keymap.set("n", "<leader>wl", ":lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>")
+vim.keymap.set("n", "<leader>rn", ":lua vim.lsp.buf.rename()<CR>")
+vim.keymap.set("n", "<leader>e" , ":lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
+vim.keymap.set("n", "[d"        , ":lua vim.lsp.diagnostic.goto_prev()<CR>")
+vim.keymap.set("n", "]d"        , ":lua vim.lsp.diagnostic.goto_next()<CR>")
+vim.keymap.set("n", "<leader>dl", ":lua vim.diagnostic.setloclist()<CR>")
+vim.keymap.set("n", "<leader>ca", ":lua vim.lsp.buf.code_action()<CR>")
+vim.keymap.set("n", "<leader>cd", ":vim.diagnostic.open_float()<CR>")
+
+
