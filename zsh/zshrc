@@ -80,10 +80,11 @@ ZSH_THEME="robbyrussell"
 # bindkey -v
 
 #Default keybinding to get into copy mode is prefix+[
-bind-key          [ copy-mode
+# bind-key          [ copy-mode
 
 plugins=(
   git
+  git-extras
   jump
   asdf
   brew

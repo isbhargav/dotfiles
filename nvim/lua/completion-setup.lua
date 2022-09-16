@@ -91,10 +91,22 @@ cmp.setup.cmdline(':', {
          })
    })
 
+
+-- list of lsp servers to setup (make sure they are installed id not then do :LspInstall <server_name>)
+local servers = {
+    "pyright",
+    "clangd",
+    "tsserver",
+    "sumneko_lua"
+}
+
+-- mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
+require("mason").setup()
+require("mason-lspconfig").setup({ ensure_installed = servers })
+
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
--- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-local servers = { "pyright", "clangd", "tsserver", "sumneko_lua"}
+
 for _, lsp in ipairs(servers) do
    require('lspconfig')[lsp].setup{
       capabilities = capabilities,
