@@ -371,7 +371,8 @@ lua require('treesitter-context-setup')
 lua require('completion-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
 lua require('utils')
-"-------------------- LSP keymaps ---------------------------------------------------------------------------------------
+"-------------------- LSP dap ---------------------------------------------------------------------------------------
+lua require('nvim-dap-setup')
 
 nnoremap <silent> K             :lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gd            :lua vim.lsp.buf.definition()<CR>
