@@ -268,6 +268,12 @@ nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
+" Switch termial
+tnoremap <Leader>h <C-\><C-n><C-w>h
+tnoremap <Leader>j <C-\><C-n><C-w>j
+tnoremap <Leader>k <C-\><C-n><C-w>k
+tnoremap <Leader>l <C-\><C-n><C-w>l
+
 
 " Switch between buffers and tabs 
 nmap <leader><tab> <C-^>
@@ -342,6 +348,8 @@ nnoremap <leader>rg <cmd>Telescope live_grep<cr>
 nnoremap <leader>bb <cmd>Telescope buffers<cr>
 nnoremap <leader>ht <cmd>Telescope help_tags<cr>
 nnoremap <leader>C <cmd>Telescope colorscheme<cr>
+nnoremap <leader>T <cmd>Telescope<cr>
+
 
 
 "           _                   ____             __ _       
@@ -370,12 +378,16 @@ lua require('text-objects-treesitter')
 lua require('treesitter-context-setup')
 " ------------------------ configuration for lsp + nvim-cmp + lspkind ------------------------------------------------
 lua require('completion-setup')
+" ----------------------- Lsp config setup ------------------------------------------------------
+lua require('nvim-lspconfig-setup')
 " ------------------------ Lsp Signature + LspKind ------------------------------------------------
 lua require('lsp_signature-setup')
 " ----------------------- Configurations for Rust tools ------------------------------------------------------------------
 lua require('utils')
 "-------------------- LSP dap ---------------------------------------------------------------------------------------
 lua require('nvim-dap-setup')
+
+
 
 " REPL live env
 nnoremap <silent><leader>x :source % <cr>
