@@ -134,13 +134,14 @@ export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
+#   export EDITOR='nvim'
 # else
-#   export EDITOR='mvim'
+#   export EDITOR='nvim'
 # fi
 export MANPAGER="vim -M +MANPAGER -"
 export EDITOR='nvim'
 export PAGER='less'
+export GIT_PAGER='delta'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export ARCHFLAGS="-arch aarch64"
@@ -176,6 +177,7 @@ alias zshso="source ~/.zshrc"
 alias tmconf="nvim ~/.tmux.conf"
 alias vimconf="nvim ~/.config/nvim/init.vim"
 alias vi="nvim"
+alias cat="bat" # cat with wings
 # alias vim="nvim"
 alias so='source'
 alias tm='tmux'
@@ -252,3 +254,16 @@ export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
 # Update /Users/bhargavlad/.zshrc:
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# setup mcfly
+eval "$(mcfly init zsh)"
+# bindkey '^[^R' mcfly-history-widget   # Ctrl+Alt+R binds to mcfly
+export MCFLY_DISABLE_MENU=TRUE       # disable menu interface
+
+# Created by `pipx` on 2022-09-20 22:20:53
+export PATH="$PATH:/Users/bhargavlad/.local/bin"
+
+# setup funky
+command -v funky &>/dev/null && eval "$(funky --init zsh)"
