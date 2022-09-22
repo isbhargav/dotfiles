@@ -1,5 +1,6 @@
 call plug#begin('~/.config/nvim/plugged')
 " Make sure you use single quotes
+Plug 'rcarriga/nvim-notify'
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
@@ -9,6 +10,7 @@ Plug 'godlygeek/tabular'
 Plug 'tpope/vim-abolish'
 Plug 'glts/vim-magnum'
 Plug 'glts/vim-radical'
+Plug 'tpope/vim-repeat'
 
 " split and join line depending on programmning language(gJ & gS)
 Plug 'AndrewRadev/splitjoin.vim'
@@ -81,9 +83,12 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
+" Markdown Preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
 
 " Status line
-Plug 'itchyny/lightline.vim'
+Plug 'nvim-lualine/lualine.nvim'
 
 " Undo tree <leader>ut
 Plug 'simnalamburt/vim-mundo'
@@ -104,7 +109,7 @@ Plug 'nvim-treesitter/playground'
 Plug 'nvim-treesitter/nvim-treesitter-context'
 
 " provide additional text objects
-" Plug 'wellle/targets.vim'
+Plug 'wellle/targets.vim'
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " Comment Plugin
@@ -207,26 +212,6 @@ aug FixTypos
     :cmap     Q! q!
 aug end
 
-
-
-let g:lightline = {
-      \ 'colorscheme': 'one',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]]
-      \ ,
-      \   'right': [ [ 'lineinfo' ],
-      \              [ 'percent' ],
-      \              [ 'charvaluehex', 'fileformat', 'fileencoding', 'filetype' ] ]
-      \ },
-      \ 'component': {
-      \   'charvaluehex': '<%b> 0x%B'
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
-
 " Show diff from last saved changes(:DiffOrign works great with ]c and [c to jump to changes)
 if !exists(":DiffOrig")
   command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
@@ -243,7 +228,7 @@ endif
 set termguicolors     " enable true colors support
 " let base16colorspace=256  " Access colors present in 256 colorspace
 set background=dark
-colorscheme tokyonight
+colorscheme sonokai
 " colorscheme base16-solarflare
 " colorscheme base16-tomorrow-night
 
@@ -360,6 +345,7 @@ nnoremap <leader>T <cmd>Telescope<cr>
 "                                                     |___/ 
 "          
            
+lua require('all-other-setup')
 " -------------------------------- comment.nvim setup
 lua require('comment-setup')
 " -------------------------------- comment.nvim setup
