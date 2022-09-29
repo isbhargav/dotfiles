@@ -159,7 +159,6 @@ bindkey "^[[F" end-of-line # ⌘→
 bindkey "\e[1;3D" backward-word # ⌥←
 bindkey "\e[1;3C" forward-word # ⌥→
 
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -253,6 +252,10 @@ export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
 
 # Update /Users/bhargavlad/.zshrc:
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# swap fzf-keybindings for cd and file
+bindkey '^t' fzf-cd-widget
+bindkey '\ec' fzf-file-widget
 
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
