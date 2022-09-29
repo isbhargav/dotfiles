@@ -4,11 +4,15 @@ local lsp_keymaps = function(client, bufnr)
   -- Keymaps
   vim.keymap.set("n", "K", ":lua vim.lsp.buf.hover()<CR>", opts)
   vim.keymap.set("n", "gd", ":lua vim.lsp.buf.definition()<CR>", opts)
-  vim.keymap.set("n", "gr", ":lua vim.lsp.buf.references()<CR>", opts)
-  vim.keymap.set("n", "<leader>dt", ":lua vim.lsp.buf.type_definition()<CR>", opts)
   vim.keymap.set("n", "gD", ":lua vim.lsp.buf.declaration()<CR>", opts)
   vim.keymap.set("n", "gi", ":lua vim.lsp.buf.implementation()<CR>", opts)
+  vim.keymap.set("n", "gy", ":lua vim.lsp.buf.type_definition()<CR>", opts)
   vim.keymap.set("n", "gs", ":lua vim.lsp.buf.signature_help()<CR>", opts)
+  -- Telescope
+  vim.keymap.set("n", "gr", "<cmd>lua require'telescope.builtin'.lsp_references()<CR>", opts)
+  vim.keymap.set("n", "<leader>ls", "<cmd>lua require'telescope.builtin'.lsp_document_symbols()<CR>", opts)
+  vim.keymap.set("n", "<leader>lS", "<cmd>lua require'telescope.builtin'.lsp_workspace_symbols()<CR>", opts)
+
   vim.keymap.set("n", "<leader>wa", ":lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
   vim.keymap.set("n", "<leader>wr", ":lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
   vim.keymap.set("n", "<leader>wl", ":lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
@@ -39,7 +43,7 @@ require("mason").setup()
 
 -- Setup lspconfig.
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local updated_capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
 local capabilitiesWithoutFomatting = require("cmp_nvim_lsp").update_capabilities(capabilities)
 capabilitiesWithoutFomatting.textDocument.formatting = false
@@ -50,22 +54,26 @@ local custom_on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
 end
 
+---------------
+--  Servers  --
+---------------
+
 -- list of lsp servers to setup (make sure they are installed id not then do :LspInstall <server_name>)
 local servers = {
   ["pyright"]     = {
-    capabilities = capabilities,
+    capabilities = updated_capabilities,
     on_attach = custom_on_attach,
   },
   ["clangd"]      = {
-    capabilities = capabilities,
+    capabilities = updated_capabilities,
     on_attach = custom_on_attach,
   },
   ["tsserver"]    = {
-    capabilities = capabilities,
+    capabilities = updated_capabilities,
     on_attach = custom_on_attach,
   },
   ["sumneko_lua"] = {
-    capabilities = capabilities,
+    capabilities = updated_capabilities,
     on_attach = custom_on_attach,
     settings = {
       Lua = {
@@ -85,10 +93,34 @@ local servers = {
       }
     }
   },
+  ["rust_analyzer"] = {
+    on_attach = custom_on_attach,
+    settings = {
+      ["rust-analyzer"] = {
+        imports = {
+          granularity = {
+            group = "module",
+          },
+          prefix = "self",
+        },
+        cargo = {
+          buildScripts = {
+            enable = true,
+          },
+        },
+        procMacro = {
+          enable = true
+        },
+      }
+    }
+  },
 }
 
 -- ensure the lsp servers listed above are installed 
-require("mason-lspconfig").setup({ ensure_installed = vim.tbl_keys(servers )})
+require("mason-lspconfig").setup({
+  ensure_installed = vim.tbl_keys(servers),
+})
+
 -- Setup Servers finally
 for lsp, cfg in pairs(servers) do
 	require("lspconfig")[lsp].setup(cfg)
