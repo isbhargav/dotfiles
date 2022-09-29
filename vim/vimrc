@@ -50,6 +50,9 @@ Plug 'junegunn/gv.vim'
 Plug 'sodapopcan/vim-twiggy'
 Plug 'idanarye/vim-merginal'
 
+" Cht.sh
+Plug 'dbeniamine/cheat.sh-vim'
+
 "Shows a git diff in the sign column
 Plug 'airblade/vim-gitgutter'
 
@@ -174,7 +177,7 @@ set noeb vb t_vb=                     " Turn of flashing and bell sound
 set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵
 " set diffopt+=vertical
 " vim's built in plugin
-runtime ftplugin/man.vim
+" runtime ftplugin/man.vim
 packadd cfilter
 
 " ----------------------  map leader key ( space )

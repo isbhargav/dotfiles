@@ -1,5 +1,11 @@
 call plug#begin('~/.config/nvim/plugged')
 " Make sure you use single quotes
+
+" Utility used by other plugins
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+
+" Betteru way to notify
 Plug 'rcarriga/nvim-notify'
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
@@ -78,10 +84,12 @@ Plug 'dhruvasagar/vim-table-mode'
 " Plug 'junegunn/fzf.vim'
 
 " Telescope
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+
+" Integration with cht.sh
+Plug 'RishabhRD/popfix'
+Plug 'isbhargav/nvim-cheat.sh'
 
 " Markdown Preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
@@ -115,11 +123,15 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 " Comment Plugin
 " Plug 'tpope/vim-commentary'
 Plug 'numToStr/Comment.nvim'
+
 " comment for embedded languages in certain types of files.
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 
 " icons
 Plug 'kyazdani42/nvim-web-devicons'
+
+" Navgate Tmux and vim winodws
+Plug 'christoomey/vim-tmux-navigator'
 
 " Debugging with VIM
 Plug 'mfussenegger/nvim-dap'
@@ -181,6 +193,7 @@ set dictionary+=/usr/share/dict/words " dictionary completion
 set noshowmode                        " status bar displays mode so no need for vim
 " set cursorline                        " hilight currentline
 packadd cfilter
+runtime ftplugin/man.vim
 
 " Let's save undo info!
 " m h  dom mon dow   command
@@ -245,19 +258,21 @@ nnoremap <leader>,zc :tabclose<cr>
 " Switch Windows with leader+ hjkl
 nnoremap <leader>ws :split<CR>
 nnoremap <leader>wv :vert split<CR>
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
+" " Move between Splits
+" nnoremap <C-a>h :wincmd h<CR>
+" nnoremap <C-a>j :wincmd j<CR>
+" nnoremap <C-a>k :wincmd k<CR>
+" nnoremap <C-a>l :wincmd l<CR>
+
 " Switch termial
-tnoremap <Leader>h <C-\><C-n><C-w>h
-tnoremap <Leader>j <C-\><C-n><C-w>j
-tnoremap <Leader>k <C-\><C-n><C-w>k
-tnoremap <Leader>l <C-\><C-n><C-w>l
+tnoremap <c-h> <C-\><C-n><C-w>h
+tnoremap <c-j> <C-\><C-n><C-w>j
+tnoremap <c-k> <C-\><C-n><C-w>k
+tnoremap <c-l> <C-\><C-n><C-w>l
 
 
 " Switch between buffers and tabs 
@@ -274,8 +289,8 @@ nmap <leader>9 9gt
 
 " Short mappings for common tasks
 " Ctrl-j/k works as Ctrl-d/u
-nnoremap <C-j> <C-d>
-nnoremap <C-k> <C-u>
+" nnoremap <C-j> <C-d>
+" nnoremap <C-k> <C-u>
 " nnoremap <C-j> <C-n>
 " nnoremap <C-k> <C-p>
 
@@ -303,8 +318,8 @@ nmap <leader>a <Plug>(LiveEasyAlign)
 vmap <leader>a <Plug>(LiveEasyAlign)
 
 " vim sideways plugin
-nnoremap <c-h> :SidewaysLeft<cr>
-nnoremap <c-l> :SidewaysRight<cr>
+nnoremap <c-\<> :SidewaysLeft<cr>
+nnoremap <c-\>> :SidewaysRight<cr>
 
 " quick-scope
 nmap <leader>q <Plug>(QuickScopeToggle)
