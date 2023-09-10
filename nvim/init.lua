@@ -41,6 +41,10 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- use trash cli
+if vim.fn.executable('trash-put --help') == 1 then
+  vim.g.netrw_localrmdir = 'trash-put -d'
+end
 -- Fix Typos
 vim.cmd([[
 aug FixTypos
@@ -89,6 +93,7 @@ require('lazy').setup({
   -- Common utils that most plugins rely on
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
+  "rcarriga/nvim-notify",
   {
     'rcarriga/nvim-notify',
     opts= {
@@ -117,7 +122,7 @@ require('lazy').setup({
     "klen/nvim-config-local",
     opts = {
       -- Default configuration (optional)
-      config_files = { ".vimrc.lua", ".vimrc" },            -- Config file patterns to load (lua supported)
+      config_files = { "init.lua","vimrc.lua", ".vimrc" },            -- Config file patterns to load (lua supported)
       hashfile = vim.fn.stdpath("data") .. "/config-local", -- Where the plugin keeps files data
       autocommands_create = true,                           -- Create autocommands (VimEnter, DirectoryChanged)
       commands_create = true,                               -- Create commands (ConfigSource, ConfigEdit, ConfigTrust, ConfigIgnore)
@@ -148,15 +153,17 @@ require('lazy').setup({
   "tpope/vim-dispatch",
   'tpope/vim-eunuch',
   'tpope/vim-abolish',
-  -- vim vineger upgrade
+  -- 'tpope/vim-vinegar',
   {
     'stevearc/oil.nvim',
-    opts = {},
+    opts = {
+      view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
+      }
+    },
     -- Optional dependencies
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    keys = {
-      {"-", "<CMD>Oil<CR>",  desc = "Open parent directory" },
-    }
   },
 
   -- align text
@@ -169,6 +176,14 @@ require('lazy').setup({
     end
   },
 
+  -- netrw upgrade
+  { 'prichrd/netrw.nvim',
+    config = true,
+    dependencies = {
+    'tpope/vim-vinegar',
+    "nvim-tree/nvim-web-devicons",
+    },
+  },
   -- persistance undo
   {
     'mbbill/undotree',
@@ -182,7 +197,7 @@ require('lazy').setup({
   -- execute selection in tmux pane
   {
     "jpalardy/vim-slime",
-    init = function()
+    config = function()
       vim.cmd([[ let g:slime_target = "tmux" ]])
       vim.cmd([[ let g:slime_default_config = {"socket_name": "default", "target_pane": ".2"} ]])
       vim.cmd([[ let g:slime_dont_ask_default = 1 ]])
@@ -320,12 +335,7 @@ require('lazy').setup({
       {
         'j-hui/fidget.nvim',
         tag = 'legacy',
-        opts = {
-          window = {
-            relative = "editor",
-            blend = 10,
-          },
-        },
+        opts = {},
       },
 
       -- Additional lua configuration, makes nvim stuff amazing!
@@ -340,9 +350,28 @@ require('lazy').setup({
       autocmd = { enabled = true },
     },
   },
+  -- {
+  --   'weilbith/nvim-code-action-menu',
+  --   cmd = 'CodeActionMenu',
+  --   keys = { { "<leader>C", "<cmd>CodeActionMenu<cr>", desc = "[C]ode Action Menu" } }
+  -- },
+
+  -- -- Navigate file symbols
+  -- {
+  --   "SmiteshP/nvim-navbuddy",
+  --   dependencies = {
+  --     "neovim/nvim-lspconfig",
+  --     "SmiteshP/nvim-navic",
+  --     "MunifTanjim/nui.nvim"
+  --   },
+  --   cmd = "SymbolsOutline",
+  --   keys = { { "<leader>nb", "<cmd>Navbuddy<cr>", desc = "Nav buddy" } }
+  -- },
   {
     'Maan2003/lsp_lines.nvim',
+    enabled=false,
     config=true,
+    event = "VeryLazy",
     init= function()
       -- require 'lsp_lines'.setup()
       local DEFAULT_CONFIG = {
@@ -384,24 +413,7 @@ require('lazy').setup({
         end
       end, { desc = "Toggle lsp_lines" })
     end
-    },
-  -- {
-  --   'weilbith/nvim-code-action-menu',
-  --   cmd = 'CodeActionMenu',
-  --   keys = { { "<leader>C", "<cmd>CodeActionMenu<cr>", desc = "[C]ode Action Menu" } }
-  -- },
-
-  -- Navigate file symbols
-  -- {
-  --   "SmiteshP/nvim-navbuddy",
-  --   dependencies = {
-  --     "neovim/nvim-lspconfig",
-  --     "SmiteshP/nvim-navic",
-  --     "MunifTanjim/nui.nvim"
-  --   },
-  --   cmd = "SymbolsOutline",
-  --   keys = { { "<leader>nb", "<cmd>Navbuddy<cr>", desc = "Nav buddy" } }
-  -- },
+  },
   {
     'stevearc/aerial.nvim',
     opts = {
@@ -410,8 +422,8 @@ require('lazy').setup({
       default_direction = "right",
       placement = "edge",
     },
-    cmd = "SymbolsOutline",
-    keys = { { "<leader>nb", "<cmd>AerialToggle!<CR>", desc = "Na" } },
+    event = "VeryLazy",
+    keys = { { "<leader>nb", "<cmd>AerialToggle!<CR>", desc = "Nav" } },
     -- Optional dependencies
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
@@ -439,7 +451,7 @@ require('lazy').setup({
     opts = function()
       local nls = require("null-ls")
       return {
-        -- debug = true, -- This will slow down Nivm (:NullLsLog)
+        debug = true, -- This will slow down Nivm
         root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
         sources = {
           -- Spell Checker
@@ -454,8 +466,8 @@ require('lazy').setup({
           -- Typescript
           nls.builtins.diagnostics.eslint_d,
           nls.builtins.code_actions.eslint_d,
+          nls.builtins.formatting.eslint_d, -- use prettier
           nls.builtins.formatting.prettierd,
-          -- nls.builtins.formatting.eslint_d, -- use prettier
 
           -- Python
           -- nls.builtins.formatting.black.with({
@@ -473,7 +485,19 @@ require('lazy').setup({
       }
     end,
   },
-
+ {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = { },
+    keys = {
+      -- { "<leader>xx", function() require("trouble").open() end, "Workspace Diagnostics (Trouble" },
+      { "<leader>xw", function() require("trouble").open("workspace_diagnostics") end, desc="Workspace Diagnostics (Trouble" },
+      { "<leader>xd", function() require("trouble").open("document_diagnostics") end , desc="Document Diagnostics (Trouble"},
+      { "<leader>xq", function() require("trouble").open("quickfix") end, desc="QuickFix List (Trouble)" },
+      { "<leader>xl", function() require("trouble").open("loclist") end , desc="Location List (Trouble)"},
+      -- { "gR", function() require("trouble").open("lsp_references") end },
+    },
+  },
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -621,7 +645,7 @@ require('lazy').setup({
     "cshuaimin/ssr.nvim",
     keys = {
       {
-        "<leader>sr",
+        "<leader>sR",
         function()
           require("ssr").open()
         end,
@@ -634,7 +658,6 @@ require('lazy').setup({
   -- sort lines
   {
     'sQVe/sort.nvim',
-    cmd = 'Sort',
     keys = {
      -- Sort current line or selection.
     { 'go', '<Esc><Cmd>Sort<CR>', mode = { 'v' } },
@@ -647,6 +670,17 @@ require('lazy').setup({
     { 'go[', 'vi[<Esc><Cmd>Sort<CR>', desc = 'Sort inside [' },
     { 'gop', 'vip<Esc><Cmd>Sort<CR>', desc = 'Sort inside paragraph' },
     },
+    cmd = 'Sort',
+    config=true,
+    -- config = function()
+    --   require("sort").setup({})
+    --
+    --   vim.cmd([[
+    --     nnoremap <silent> <leader>s <Cmd>Sort<CR>
+    --     vnoremap <silent> <leader>s <Esc><Cmd>Sort<CR>
+    --   ]])
+    -- end
+
   },
 
   -- Extend vim %
@@ -730,6 +764,54 @@ require('lazy').setup({
     -- config = function()
     --   pcall(require('nvim-treesitter.install').update { with_sync = true })
     -- end,
+  },
+
+  {
+    '/apollo/env/envImprovement/vim/amazon/brazil-config/',
+    url = "ladbh@git.amazon.com:pkg/NinjaHooks",
+    branch = 'mainline',
+    config = function(plugin)
+      vim.opt.rtp:append(plugin.dir .. '/configuration/vim/amazon/brazil-config')
+      local bufcheck = vim.api.nvim_create_augroup('bufcheck', { clear = true })
+
+      vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
+        group    = bufcheck,
+        pattern  = 'Config',
+        callback = function()
+          vim.cmd('setf brazilconfig')
+          vim.keymap.set("n", "K", ":lua vim.lsp.buf.hover()<CR>")
+          vim.keymap.set("n", "gd", ":lua vim.lsp.buf.definition()<CR>")
+        end
+      })
+      --------------------------------
+      -- Barium
+      --------------------------------
+      local lspconfig = require 'lspconfig'
+      local configs = require 'lspconfig.configs'
+
+      -- Check if the config is already defined (useful when reloading this file)
+      if not configs.barium then
+        configs.barium = {
+          default_config = {
+            cmd = { 'barium' },
+            filetypes = { 'brazilconfig' },
+            root_dir = function(fname)
+              return lspconfig.util.find_git_ancestor(fname)
+            end,
+            settings = {},
+          },
+        }
+      end
+
+      lspconfig.barium.setup {}
+    end
+  },
+  {
+    url = 'ssh://git.amazon.com:2222/pkg/Vim-code-browse',
+    branch = 'mainline',
+    -- cmd = {"G", "Git", "GBrowse"},
+    keys = { { "<leader>gb", "<cmd>GBrowse<cr>", desc = "[G]it [B]rowse" } },
+    lazy = false
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -968,7 +1050,6 @@ pcall(require('telescope').load_extension, 'ui-select')
 pcall(require('telescope').load_extension, 'live_grep_args')
 pcall(require('telescope').load_extension, 'harpoon')
 pcall(require('telescope').load_extension, 'notify')
-pcall(require('telescope').load_extension, 'aerial')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -1076,7 +1157,7 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
   { border = 'rounded' }
 )
 
--- border diagnostic floating window (DEFAULT_CONFIG)
+-- border diagnostic floating window
 vim.diagnostic.config({
   virtual_text = true,
   virtual_lines = false,
@@ -1086,7 +1167,6 @@ vim.diagnostic.config({
     source = 'always',
   },
 })
-
 local sign = function(opts)
   vim.fn.sign_define(opts.name, {
     texthl = opts.name,
@@ -1150,7 +1230,7 @@ local on_attach = function(client, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 
   -- attach navbuddy
-  -- require('nvim-navbuddy').attach(client, bufnr)
+  require('nvim-navbuddy').attach(client, bufnr)
 end
 
 -- Enable the following language servers
@@ -1180,7 +1260,6 @@ local servers = {
     }
   },
   tsserver = {},
-  -- eslint ={},
   yamlls = {},
   bashls = {},
   lua_ls = {
@@ -1270,8 +1349,8 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ["<C-e>"] = cmp.mapping.abort(),
     ['<C-Space>'] = cmp.mapping.complete {},
+    ["<C-e>"] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -1305,3 +1384,4 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
